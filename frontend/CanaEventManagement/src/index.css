@@ -1,4 +1,9 @@
 @import "tailwindcss";
+
+/* In your global CSS file */
+html {
+    scroll-behavior: smooth;
+  }
 /* ════════════════════════════════════════════════════════════
    CANA EVENT MANAGEMENT — Global Animations
    Add these to your src/index.css (after @tailwind directives)
