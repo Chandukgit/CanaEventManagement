@@ -1,69 +1,58 @@
-import { useState, useEffect, useRef } from "react";
+// 1. Imports
+import React, { useState, useEffect, useRef } from "react";
+import { companyData } from "../data/companyData";
 
-// ── Replace these with your actual imported images ──────────────────────────
-// import hero1 from '../assets/images/hero/hero1.jpg'
-// import hero2 from '../assets/images/hero/hero2.jpg'
-// ...
-// For now we use gradient placeholders so you can see the layout immediately.
-const SLIDES = [
-  {
-    // image: hero1,          ← swap in when you have real photos
-    gradient: "linear-gradient(135deg, #0a0a0a 0%, #1a0a00 40%, #2d1200 100%)",
-    overlay: "rgba(0,0,0,0.45)",
-  },
-  {
-    gradient: "linear-gradient(135deg, #0a0000 0%, #200010 40%, #3d0020 100%)",
-    overlay: "rgba(0,0,0,0.50)",
-  },
-  {
-    gradient: "linear-gradient(135deg, #000a0a 0%, #001520 40%, #002540 100%)",
-    overlay: "rgba(0,0,0,0.48)",
-  },
-  {
-    gradient: "linear-gradient(135deg, #0a0800 0%, #1a1200 40%, #2d2000 100%)",
-    overlay: "rgba(0,0,0,0.45)",
-  },
-  {
-    gradient: "linear-gradient(135deg, #050010 0%, #0d0030 40%, #1a0050 100%)",
-    overlay: "rgba(0,0,0,0.50)",
-  },
-];
+// Import images
+import heroBg1 from "../assets/images/hero_bg_1.png";
+import heroBg2 from "../assets/images/hero_bg_2.png";
 
-const TITLES = [
-  "Cana Event Management",
-  "Marriage Events",
-  "Corporate Events",
-  "Birthday Events",
-  "College Events",
-  "Photo Shoots",
-  "One Stop Solution",
-];
+// 2. Dynamic Variables
+const heroData = {
+  slides: [
+    { image: heroBg1, overlay: "rgba(0, 33, 31, 0.6)" },
+    { image: heroBg2, overlay: "rgba(0, 33, 31, 0.5)" },
+  ],
+  titles: [
+    `${companyData.logoText} Events`,
+    "Exquisite Weddings",
+    "Corporate Elegance",
+    "Grand Celebrations",
+    "Sophisticated Galas",
+    "One Stop Solution"
+  ],
+  subtitle: "Transforming your vision into extraordinary celebrations with unmatched elegance and precision.",
+  eyebrow: "Elite Event Management",
+  contactBtn: { label: "Connect with Us", href: companyData.phoneLink },
+  enquiryBtn: { label: "Book Consultation", href: "#enquiry" },
+  socialLinks: companyData.socials,
+  stats: [
+    { num: "1200+", label: "Elite Events" },
+    { num: "8+", label: "Years of Mastery" },
+    { num: "500+", label: "Global Clients" }
+  ],
+  timings: {
+    titleDuration: 3500,
+    slideDuration: 6000
+  }
+};
 
-const SUBTITLE =
-  "We craft extraordinary celebrations that transform your vision into unforgettable experiences across South India.";
-
-// How long each title stays (ms) — titles cycle faster than slides
-const TITLE_DURATION = 3000;
-// How long each slide stays (ms)
-const SLIDE_DURATION = 5000;
-
+// 3. Component
 export default function HeroSection() {
   const [slideIndex, setSlideIndex] = useState(0);
   const [titleIndex, setTitleIndex] = useState(0);
   const [titleVisible, setTitleVisible] = useState(true);
-  const [slideProgress, setSlideProgress] = useState(0); // 0-100
+  const [slideProgress, setSlideProgress] = useState(0);
 
   const slideTimer = useRef(null);
   const titleTimer = useRef(null);
   const progressTimer = useRef(null);
 
-  // ── Slide cycling ───────────────────────────────────────────────────────
   useEffect(() => {
     startProgress();
     slideTimer.current = setInterval(() => {
-      setSlideIndex((prev) => (prev + 1) % SLIDES.length);
+      setSlideIndex((prev) => (prev + 1) % heroData.slides.length);
       startProgress();
-    }, SLIDE_DURATION);
+    }, heroData.timings.slideDuration);
     return () => {
       clearInterval(slideTimer.current);
       clearInterval(progressTimer.current);
@@ -73,7 +62,7 @@ export default function HeroSection() {
   function startProgress() {
     setSlideProgress(0);
     clearInterval(progressTimer.current);
-    const step = 100 / (SLIDE_DURATION / 50);
+    const step = 100 / (heroData.timings.slideDuration / 50);
     progressTimer.current = setInterval(() => {
       setSlideProgress((p) => {
         if (p >= 100) { clearInterval(progressTimer.current); return 100; }
@@ -82,16 +71,14 @@ export default function HeroSection() {
     }, 50);
   }
 
-  // ── Title cycling with fade ─────────────────────────────────────────────
   useEffect(() => {
     titleTimer.current = setInterval(() => {
-      // fade out
       setTitleVisible(false);
       setTimeout(() => {
-        setTitleIndex((prev) => (prev + 1) % TITLES.length);
+        setTitleIndex((prev) => (prev + 1) % heroData.titles.length);
         setTitleVisible(true);
       }, 600);
-    }, TITLE_DURATION);
+    }, heroData.timings.titleDuration);
     return () => clearInterval(titleTimer.current);
   }, []);
 
@@ -100,296 +87,111 @@ export default function HeroSection() {
     clearInterval(slideTimer.current);
     startProgress();
     slideTimer.current = setInterval(() => {
-      setSlideIndex((prev) => (prev + 1) % SLIDES.length);
+      setSlideIndex((prev) => (prev + 1) % heroData.slides.length);
       startProgress();
-    }, SLIDE_DURATION);
+    }, heroData.timings.slideDuration);
   };
 
-  const slide = SLIDES[slideIndex];
-
   return (
-    <>
-      {/* Google Fonts */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
-
-        @keyframes kenBurns {
-          0%   { transform: scale(1.05) translateX(0px); }
-          100% { transform: scale(1.12) translateX(-20px); }
-        }
-        @keyframes titleSlideUp {
-          0%   { opacity: 0; transform: translateY(30px) skewY(1deg); }
-          100% { opacity: 1; transform: translateY(0px) skewY(0deg); }
-        }
-        @keyframes titleSlideDown {
-          0%   { opacity: 1; transform: translateY(0px); }
-          100% { opacity: 0; transform: translateY(-30px); }
-        }
-        @keyframes fadeInUp {
-          0%   { opacity: 0; transform: translateY(20px); }
-          100% { opacity: 1; transform: translateY(0px); }
-        }
-        @keyframes socialFloat {
-          0%, 100% { transform: translateY(0px); }
-          50%       { transform: translateY(-6px); }
-        }
-        @keyframes shimmer {
-          0%   { background-position: -200% center; }
-          100% { background-position: 200% center; }
-        }
-        .title-enter {
-          animation: titleSlideUp 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
-        }
-        .title-exit {
-          animation: titleSlideDown 0.5s ease-in forwards;
-        }
-        .gold-shimmer {
-          background: linear-gradient(90deg, #C9A84C 0%, #F5D98B 30%, #fff8dc 50%, #F5D98B 70%, #C9A84C 100%);
-          background-size: 200% auto;
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          animation: shimmer 3s linear infinite;
-        }
-        .slide-bg {
-          animation: kenBurns 6s ease-in-out infinite alternate;
-        }
-        .cta-btn {
-          position: relative;
-          overflow: hidden;
-          transition: all 0.3s ease;
-        }
-        .cta-btn::before {
-          content: '';
-          position: absolute;
-          top: 0; left: -100%;
-          width: 100%; height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-          transition: left 0.5s ease;
-        }
-        .cta-btn:hover::before { left: 100%; }
-        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.4); }
-      `}</style>
-
-      <section id="home" className="relative w-full h-screen overflow-hidden">
-
-        {/* ── Background slides ─────────────────────────────────────────── */}
-        {SLIDES.map((s, i) => (
-          <div
-            key={i}
-            className="absolute inset-0 transition-opacity duration-1000"
-            style={{ opacity: i === slideIndex ? 1 : 0, zIndex: 0 }}
-          >
-            {/* Swap: replace style with: backgroundImage: `url(${s.image})` */}
-            <div
-              className="w-full h-full slide-bg"
-              style={{
-                background: s.gradient,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            {/* Dark overlay */}
-            <div className="absolute inset-0" style={{ background: s.overlay }} />
-          </div>
-        ))}
-
-        {/* ── Decorative grain texture ──────────────────────────────────── */}
+    <section id="home" className="relative w-full h-screen overflow-hidden bg-primary flex items-center justify-center pt-20">
+      {/* Background Slides */}
+      {heroData.slides.map((s, i) => (
         <div
-          className="absolute inset-0 z-10 pointer-events-none opacity-20"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-            backgroundRepeat: "repeat",
-            backgroundSize: "128px",
-          }}
-        />
-
-        {/* ── Gold diagonal accent line ─────────────────────────────────── */}
-        <div
-          className="absolute z-10 pointer-events-none"
-          style={{
-            top: 0, left: "50%",
-            width: "1px", height: "120px",
-            background: "linear-gradient(to bottom, transparent, #C9A84C, transparent)",
-            opacity: 0.6,
-          }}
-        />
-
-        {/* ── Social icons (left side) ──────────────────────────────────── */}
-        <div className="absolute left-6 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-5">
-          {[
-            { icon: "📸", label: "Instagram", href: "#" },
-            { icon: "👤", label: "Facebook", href: "#" },
-            { icon: "▶️", label: "YouTube", href: "#" },
-          ].map((s, i) => (
-            <a
-              key={s.label}
-              href={s.href}
-              title={s.label}
-              className="w-9 h-9 flex items-center justify-center rounded-full border border-amber-400/40 text-amber-400 text-sm hover:bg-amber-400 hover:text-black transition-all duration-300"
-              style={{ animation: `socialFloat ${2 + i * 0.4}s ease-in-out infinite` }}
-            >
-              {s.icon}
-            </a>
-          ))}
-          <div className="w-px h-16 bg-gradient-to-b from-amber-400/60 to-transparent mx-auto" />
+          key={i}
+          className="absolute inset-0 transition-opacity duration-1500 ease-in-out"
+          style={{ opacity: i === slideIndex ? 1 : 0, zIndex: 0 }}
+        >
+          <div 
+            className="w-full h-full scale-110 animate-ken-burns" 
+            style={{ 
+              backgroundImage: `url(${s.image})`, 
+              backgroundSize: "cover", 
+              backgroundPosition: "center",
+              transform: i === slideIndex ? "scale(1)" : "scale(1.1)",
+              transition: "transform 6s ease-out"
+            }} 
+          />
+          <div className="absolute inset-0" style={{ background: s.overlay }} />
         </div>
+      ))}
 
-        {/* ── Main content ──────────────────────────────────────────────── */}
-        <div className="relative z-20 flex flex-col items-center justify-center h-full text-center px-6">
+      {/* Social Icons Sidebar */}
+      <div className="absolute left-6 lg:left-8 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-6 hidden md:flex">
+        {heroData.socialLinks.map((s, i) => (
+          <a key={s.label} href={s.url} title={s.label} target="_blank" rel="noreferrer"
+             className="w-12 h-12 flex items-center justify-center rounded-full glass-card hover:bg-secondary hover:text-primary transition-all duration-300 animate-float"
+             style={{ animationDelay: `${i * 0.2}s` }}>
+            <span className="text-lg">{s.icon}</span>
+          </a>
+        ))}
+        <div className="w-[1px] h-24 bg-gradient-to-b from-secondary to-transparent mx-auto mt-4" />
+      </div>
 
-          {/* Eyebrow label */}
-          <div
-            className="mb-6 flex items-center gap-3"
-            style={{ animation: "fadeInUp 1s ease 0.2s both" }}
-          >
-            <span className="block w-12 h-px bg-amber-400/60" />
-            <span
-              className="text-amber-400 text-xs tracking-[6px] uppercase font-medium"
-              style={{ fontFamily: "'Cinzel', serif" }}
-            >
-              Premium Events
+      {/* Main Content */}
+      <div className="h-[80vh] relative z-20 flex flex-col items-center justify-center text-center px-4 md:px-6 max-w-7xl mx-auto w-full">
+        <div className="glass-card p-8 sm:p-12 md:p-16 lg:p-24 relative overflow-hidden w-full border-none shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 to-transparent pointer-events-none" />
+          
+          <div className="mb-6 sm:mb-8 flex items-center justify-center gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+            <span className="block w-10 sm:w-16 h-[1px] bg-secondary/50" />
+            <span className="text-secondary text-xs tracking-[4px] sm:tracking-[8px] uppercase font-bold">
+              {heroData.eyebrow}
             </span>
-            <span className="block w-12 h-px bg-amber-400/60" />
+            <span className="block w-10 sm:w-16 h-[1px] bg-secondary/50" />
           </div>
 
-          {/* Animated Title */}
-          <div className="overflow-hidden mb-6" style={{ minHeight: "clamp(60px, 10vw, 120px)" }}>
-            <h1
+          <div className="overflow-hidden mb-6 sm:mb-8 flex justify-center items-center h-20 sm:h-28 md:h-32 lg:h-40">
+            <p
               key={titleIndex}
-              className={`font-black uppercase leading-none tracking-tight gold-shimmer ${
-                titleVisible ? "title-enter" : "title-exit"
-              }`}
-              style={{
-                fontFamily: "'Cinzel', serif",
-                fontSize: "clamp(28px, 6vw, 86px)",
-                lineHeight: 1.1,
-              }}
-            >
-              {TITLES[titleIndex]}
-            </h1>
+              className={`font-black text-2xl sm:text-5xl md:text-7xl lg:text-6xl uppercase leading-tight tracking-tight text-gold-gradient ${titleVisible ? "animate-slide-up" : "opacity-0"}`}>
+              {heroData.titles[titleIndex]}
+            </p>
           </div>
 
-          {/* Decorative divider */}
-          <div className="flex items-center gap-4 mb-6" style={{ animation: "fadeInUp 1s ease 0.5s both" }}>
-            <span className="block w-16 h-px bg-gradient-to-r from-transparent to-amber-400/70" />
-            <span className="text-amber-400 text-lg">✦</span>
-            <span className="block w-16 h-px bg-gradient-to-l from-transparent to-amber-400/70" />
-          </div>
-
-          {/* Subtitle */}
-          <p
-            className="text-gray-300 max-w-2xl leading-relaxed mb-10"
-            style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: "clamp(14px, 2vw, 20px)",
-              fontStyle: "italic",
-              animation: "fadeInUp 1s ease 0.6s both",
-            }}
-          >
-            {SUBTITLE}
+          <p className="text-white/80 max-w-3xl mx-auto leading-relaxed mb-8 sm:mb-12 text-lg sm:text-xl md:text-2xl font-light italic animate-slide-up"
+             style={{ fontFamily: "'Cormorant Garamond', serif", animationDelay: "0.6s" }}>
+            "{heroData.subtitle}"
           </p>
 
-          {/* CTA Buttons */}
-          <div
-            className="flex flex-wrap items-center justify-center gap-4"
-            style={{ animation: "fadeInUp 1s ease 0.8s both" }}
-          >
-            <a
-              href="tel:+919876543210"
-              className="cta-btn px-8 py-4 text-black text-sm font-bold tracking-[3px] uppercase"
-              style={{
-                fontFamily: "'Cinzel', serif",
-                background: "linear-gradient(135deg, #C9A84C 0%, #F5D98B 50%, #C9A84C 100%)",
-                clipPath: "polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)",
-              }}
-            >
-              📞 Call Us Now
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 animate-slide-up" style={{ animationDelay: "0.8s" }}>
+            <a href={heroData.contactBtn.href} className="btn-premium w-full sm:w-auto">
+              {heroData.contactBtn.label}
             </a>
-            <a
-              href="#enquiry"
-              className="cta-btn px-8 py-4 text-amber-400 text-sm font-bold tracking-[3px] uppercase border border-amber-400/60 hover:border-amber-400"
-              style={{
-                fontFamily: "'Cinzel', serif",
-                clipPath: "polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%)",
-              }}
-            >
-              Book an Event
+            <a href={heroData.enquiryBtn.href} className="btn-outline-gold w-full sm:w-auto">
+              {heroData.enquiryBtn.label}
             </a>
           </div>
 
-          {/* Stats strip */}
-          <div
-            className="mt-16 flex flex-wrap justify-center gap-12"
-            style={{ animation: "fadeInUp 1s ease 1s both" }}
-          >
-            {[
-              { num: "500+", label: "Events Done" },
-              { num: "5+", label: "Years Experience" },
-              { num: "300+", label: "Happy Clients" },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <div
-                  className="text-3xl font-black gold-shimmer"
-                  style={{ fontFamily: "'Cinzel', serif" }}
-                >
+          <div className="mt-12 sm:mt-16 pt-8 sm:pt-10 border-t border-secondary/20 flex flex-wrap justify-center gap-8 sm:gap-12 md:gap-24 animate-slide-up" style={{ animationDelay: "1s" }}>
+            {heroData.stats.map((stat) => (
+              <div key={stat.label} className="text-center group">
+                <div className="text-3xl sm:text-4xl lg:text-5xl font-black text-gold-gradient group-hover:scale-110 transition-transform duration-500">
                   {stat.num}
                 </div>
-                <div className="text-gray-400 text-xs tracking-[3px] uppercase mt-1" style={{ fontFamily: "'Cinzel', serif" }}>
+                <div className="text-secondary/80 text-[10px] sm:text-xs tracking-[2px] sm:tracking-[4px] uppercase mt-2 sm:mt-3 font-bold">
                   {stat.label}
                 </div>
               </div>
             ))}
           </div>
         </div>
+      </div>
 
-        {/* ── Slide indicators (bottom center) ─────────────────────────── */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-4">
-          {/* Progress bar for current slide */}
-          <div className="w-48 h-px bg-white/20 overflow-hidden rounded-full">
-            <div
-              className="h-full bg-amber-400 transition-none rounded-full"
-              style={{ width: `${slideProgress}%` }}
-            />
-          </div>
-
-          {/* Dot indicators */}
-          <div className="flex gap-3">
-            {SLIDES.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => goToSlide(i)}
-                className="transition-all duration-300 rounded-full"
-                style={{
-                  width: i === slideIndex ? "28px" : "8px",
-                  height: "8px",
-                  background: i === slideIndex
-                    ? "linear-gradient(90deg, #C9A84C, #F5D98B)"
-                    : "rgba(255,255,255,0.3)",
-                }}
-              />
-            ))}
-          </div>
-
-          {/* Slide counter */}
-          <span className="text-white/40 text-xs tracking-widest" style={{ fontFamily: "'Cinzel', serif" }}>
-            {String(slideIndex + 1).padStart(2, "0")} / {String(SLIDES.length).padStart(2, "0")}
-          </span>
+      {/* Slide Indicators */}
+      <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 sm:gap-4 glass-card px-6 py-3 sm:px-8 sm:py-4 rounded-full border-secondary/20">
+        <div className="w-40 sm:w-64 h-0.5 bg-white/10 overflow-hidden rounded-full">
+          <div className="h-full bg-secondary transition-none" style={{ width: `${slideProgress}%` }} />
         </div>
-
-        {/* ── Scroll hint ───────────────────────────────────────────────── */}
-        <div className="absolute bottom-8 right-8 z-20 flex flex-col items-center gap-2 opacity-50">
-          <div className="w-5 h-8 border border-white/40 rounded-full flex justify-center pt-1.5">
-            <div
-              className="w-1 h-2 bg-amber-400 rounded-full"
-              style={{ animation: "socialFloat 1.5s ease-in-out infinite" }}
+        <div className="flex gap-3 sm:gap-4">
+          {heroData.slides.map((_, i) => (
+            <button key={i} onClick={() => goToSlide(i)}
+              className="transition-all duration-500 rounded-full h-1"
+              style={{ width: i === slideIndex ? "32px" : "8px", background: i === slideIndex ? "var(--secondary)" : "rgba(201, 168, 76, 0.2)" }} 
+              aria-label={`Go to slide ${i + 1}`}
             />
-          </div>
-          <span className="text-white/50 text-[9px] tracking-[3px] uppercase rotate-90 mt-2"
-            style={{ fontFamily: "'Cinzel', serif" }}>Scroll</span>
+          ))}
         </div>
-
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

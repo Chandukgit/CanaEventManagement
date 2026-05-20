@@ -1,15 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+// 1. Imports
+import React, { useState, useEffect, useRef } from "react";
+import { companyData } from "../data/companyData";
 
-// 🖼️ Replace with your actual background image:
-// import statsBg from '../assets/images/about/stats-bg.jpg'
+// 2. Dynamic Variables
+const statsData = {
+  sectionLabel: "Our Numbers",
+  heading: { main: "The", highlight: "Numbers", suffix: "Speak" },
+  subtitle: "Every milestone is a story of trust, creativity, and flawless execution.",
+  tagline: `Trusted by Colleges, Corporates & Families across India`,
+  stats: [
+    { end: 500, suffix: "+", label: "Events Done", icon: "🎪", desc: "Across India" },
+    { end: 10, suffix: "+", label: "Years Experience", icon: "⭐", desc: "Of Excellence" },
+    { end: 1000, suffix: "+", label: "Happy Clients", icon: "🤝", desc: "& Counting" },
+    { end: 50, suffix: "+", label: "Cities Covered", icon: "🗺️", desc: "Pan India" }
+  ]
+};
 
-const STATS = [
-  { end: 500,  suffix: "+",  label: "Events Done",       icon: "🎪", desc: "Across India" },
-  { end: 10,   suffix: "+",  label: "Years Experience",  icon: "⭐", desc: "Of Excellence" },
-  { end: 1000, suffix: "+",  label: "Happy Clients",     icon: "🤝", desc: "& Counting" },
-  { end: 50,   suffix: "+",  label: "Cities Covered",    icon: "🗺️", desc: "Pan India" },
-];
-
+// CountUp hook helper
 function useCountUp(end, duration = 2000, start = false) {
   const [count, setCount] = useState(0);
   useEffect(() => {
@@ -18,7 +25,6 @@ function useCountUp(end, duration = 2000, start = false) {
     const step = (timestamp) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      // Easing: easeOutExpo
       const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
       setCount(Math.floor(eased * end));
       if (progress < 1) requestAnimationFrame(step);
@@ -28,6 +34,7 @@ function useCountUp(end, duration = 2000, start = false) {
   return count;
 }
 
+// Card subcomponent
 function StatCard({ stat, index, started }) {
   const count = useCountUp(stat.end, 2200, started);
   const [hovered, setHovered] = useState(false);
@@ -36,109 +43,49 @@ function StatCard({ stat, index, started }) {
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={`relative p-6 sm:p-12 text-center transition-all duration-500 ease-out cursor-default glass-card border-none rounded-[2rem] ${
+        hovered 
+          ? "bg-secondary/10 -translate-y-3 shadow-2xl" 
+          : "bg-primary-light/40 translate-y-0"
+      }`}
       style={{
-        position: "relative",
-        padding: "40px 32px",
-        border: `1px solid ${hovered ? "rgba(201,168,76,0.6)" : "rgba(255,255,255,0.12)"}`,
-        background: hovered
-          ? "rgba(201,168,76,0.06)"
-          : "rgba(0,0,0,0.45)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        textAlign: "center",
-        cursor: "default",
-        transition: "all 0.4s cubic-bezier(0.22,1,0.36,1)",
-        transform: hovered ? "translateY(-8px) scale(1.02)" : "translateY(0) scale(1)",
-        boxShadow: hovered
-          ? "0 20px 60px rgba(201,168,76,0.2), inset 0 1px 0 rgba(201,168,76,0.2)"
-          : "0 4px 24px rgba(0,0,0,0.4)",
         opacity: started ? 1 : 0,
         transitionDelay: `${index * 0.12}s`,
       }}
     >
-      {/* Top-left corner accent */}
-      <div style={{
-        position: "absolute", top: 0, left: 0,
-        width: "32px", height: "32px",
-        borderTop: `2px solid ${hovered ? "#C9A84C" : "rgba(201,168,76,0.4)"}`,
-        borderLeft: `2px solid ${hovered ? "#C9A84C" : "rgba(201,168,76,0.4)"}`,
-        transition: "all 0.4s ease",
-      }} />
-      {/* Bottom-right corner accent */}
-      <div style={{
-        position: "absolute", bottom: 0, right: 0,
-        width: "32px", height: "32px",
-        borderBottom: `2px solid ${hovered ? "#C9A84C" : "rgba(201,168,76,0.4)"}`,
-        borderRight: `2px solid ${hovered ? "#C9A84C" : "rgba(201,168,76,0.4)"}`,
-        transition: "all 0.4s ease",
-      }} />
+      <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent pointer-events-none rounded-[2rem]" />
+      
+      {/* Corner accents */}
+      <div className={`absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 rounded-tl-[2rem] transition-colors duration-300 ${hovered ? 'border-secondary' : 'border-secondary/20'}`} />
+      <div className={`absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 rounded-br-[2rem] transition-colors duration-300 ${hovered ? 'border-secondary' : 'border-secondary/20'}`} />
 
       {/* Icon */}
-      <div style={{
-        fontSize: "32px", marginBottom: "16px",
-        transform: hovered ? "scale(1.2) rotate(10deg)" : "scale(1) rotate(0deg)",
-        transition: "transform 0.4s cubic-bezier(0.22,1,0.36,1)",
-        display: "block",
-      }}>{stat.icon}</div>
+      <div className={`text-4xl sm:text-5xl mb-4 sm:mb-6 inline-block transition-transform duration-500 ${hovered ? "scale-125 rotate-6" : "scale-100 rotate-0"}`}>
+        {stat.icon}
+      </div>
 
       {/* Number */}
-      <div style={{
-        fontFamily: "'Cinzel',serif",
-        fontSize: "clamp(40px,4vw,64px)",
-        fontWeight: 900,
-        lineHeight: 1,
-        background: "linear-gradient(135deg,#C9A84C 0%,#F5D98B 50%,#C9A84C 100%)",
-        backgroundSize: "200%",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
-        backgroundClip: "text",
-        animation: "shimmer 2.5s linear infinite",
-        marginBottom: "8px",
-      }}>
+      <div className="text-4xl sm:text-5xl lg:text-6xl font-black leading-none text-gold-gradient mb-3 sm:mb-4 drop-shadow-2xl">
         {count.toLocaleString()}{stat.suffix}
       </div>
 
       {/* Label */}
-      <div style={{
-        fontFamily: "'Cinzel',serif",
-        fontSize: "11px",
-        letterSpacing: "4px",
-        color: "#fff",
-        textTransform: "uppercase",
-        marginBottom: "6px",
-      }}>{stat.label}</div>
+      <div className="text-xs sm:text-sm tracking-[4px] sm:tracking-[6px] text-white uppercase font-bold mb-2 sm:mb-3 group-hover:text-secondary transition-colors">
+        {stat.label}
+      </div>
 
       {/* Sub-desc */}
-      <div style={{
-        fontFamily: "'Cormorant Garamond',serif",
-        fontSize: "13px",
-        color: "rgba(201,168,76,0.6)",
-        fontStyle: "italic",
-        letterSpacing: "1px",
-      }}>{stat.desc}</div>
-
-      {/* Glow on hover */}
-      {hovered && (
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "radial-gradient(circle at center, rgba(201,168,76,0.08) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-      )}
+      <div className="font-['Cormorant_Garamond'] text-base sm:text-lg text-white/40 italic tracking-wide">
+        {stat.desc}
+      </div>
     </div>
   );
 }
 
+// 3. Component
 export default function StatsSection() {
   const [started, setStarted] = useState(false);
-  const [scrollY, setScrollY]   = useState(0);
   const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -149,140 +96,54 @@ export default function StatsSection() {
     return () => obs.disconnect();
   }, []);
 
-  // Parallax: the bg moves slower than scroll
-  const sectionTop = sectionRef.current?.offsetTop ?? 0;
-  const relativeScroll = scrollY - sectionTop;
-  const parallaxOffset = relativeScroll * 0.35;
-
   return (
-    <section
-      ref={sectionRef}
-      id="stats"
-      style={{ position: "relative", overflow: "hidden", padding: "0", margin: "0" }}
-    >
-      {/* ── Full-bleed parallax background ──────────────────────── */}
-      <div style={{
-        position: "absolute", inset: "-20%",
-        /* swap: backgroundImage: `url(${statsBg})`, */
-        background: "linear-gradient(135deg, #0d0505 0%, #1a0808 30%, #240e0e 60%, #0d0505 100%)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        transform: `translateY(${parallaxOffset}px)`,
-        transition: "transform 0.05s linear",
-        zIndex: 0,
-      }} />
+    <section ref={sectionRef} id="stats" className="relative overflow-hidden bg-primary py-20 md:py-32 border-y border-secondary/10">
+      
+      {/* Soft Background Gradients */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-secondary/5 blur-3xl rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 blur-3xl rounded-full pointer-events-none" />
 
-      {/* Dark overlay for text legibility */}
-      <div style={{
-        position: "absolute", inset: 0,
-        background: "rgba(0,0,0,0.65)",
-        zIndex: 1,
-      }} />
+      <div className="relative z-20 max-w-7xl mx-auto px-6">
 
-      {/* Animated scanlines */}
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none",
-        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px)",
-        opacity: 0.4,
-      }} />
-
-      {/* Gold horizontal beam top */}
-      <div style={{
-        position: "absolute", top: 0, left: 0, right: 0,
-        height: "2px",
-        background: "linear-gradient(90deg, transparent, #C9A84C, #F5D98B, #C9A84C, transparent)",
-        zIndex: 3,
-      }} />
-      {/* Gold horizontal beam bottom */}
-      <div style={{
-        position: "absolute", bottom: 0, left: 0, right: 0,
-        height: "2px",
-        background: "linear-gradient(90deg, transparent, #C9A84C, #F5D98B, #C9A84C, transparent)",
-        zIndex: 3,
-      }} />
-
-      <div style={{ position: "relative", zIndex: 4, padding: "100px 24px" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-
-          {/* Section header */}
-          <div style={{
-            textAlign: "center", marginBottom: "72px",
-            opacity: started ? 1 : 0,
-            transform: started ? "translateY(0)" : "translateY(24px)",
-            transition: "all 0.9s cubic-bezier(0.22,1,0.36,1)",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "16px" }}>
-              <span style={{ display: "block", width: "60px", height: "1px", background: "linear-gradient(to right, transparent, #C9A84C)" }} />
-              <span style={{
-                fontFamily: "'Cinzel',serif", fontSize: "10px",
-                letterSpacing: "6px", color: "#C9A84C", textTransform: "uppercase",
-              }}>Our Numbers</span>
-              <span style={{ display: "block", width: "60px", height: "1px", background: "linear-gradient(to left, transparent, #C9A84C)" }} />
-            </div>
-            <h2 style={{
-              fontFamily: "'Cinzel',serif",
-              fontSize: "clamp(28px,4.5vw,58px)",
-              fontWeight: 900,
-              color: "#fff",
-              lineHeight: 1.1,
-            }}>
-              The{" "}
-              <span style={{
-                background: "linear-gradient(90deg,#C9A84C,#F5D98B,#C9A84C)",
-                backgroundSize: "200%",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                animation: "shimmer 3s linear infinite",
-              }}>Numbers</span>
-              {" "}Speak
-            </h2>
-            <p style={{
-              fontFamily: "'Cormorant Garamond',serif",
-              fontSize: "clamp(14px,1.5vw,18px)",
-              color: "rgba(255,255,255,0.5)",
-              fontStyle: "italic",
-              marginTop: "12px",
-              maxWidth: "480px",
-              margin: "12px auto 0",
-            }}>
-              Every milestone is a story of trust, creativity, and flawless execution.
-            </p>
+        {/* Section header */}
+        <div className={`text-center mb-16 md:mb-24 transition-all duration-1000 ease-out ${started ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <div className="flex items-center justify-center gap-4 sm:gap-6 mb-6">
+            <span className="block w-12 sm:w-20 h-[1px] bg-secondary/50" />
+            <span className="text-[10px] sm:text-[12px] tracking-[6px] sm:tracking-[8px] text-secondary font-bold uppercase">
+              {statsData.sectionLabel}
+            </span>
+            <span className="block w-12 sm:w-20 h-[1px] bg-secondary/50" />
           </div>
-
-          {/* Stats grid */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "24px",
-          }}>
-            {STATS.map((stat, i) => (
-              <StatCard key={stat.label} stat={stat} index={i} started={started} />
-            ))}
-          </div>
-
-          {/* Bottom tagline */}
-          <div style={{
-            textAlign: "center", marginTop: "64px",
-            opacity: started ? 1 : 0,
-            transition: "opacity 1s ease 0.8s",
-          }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
-              <span style={{ display: "block", flex: 1, maxWidth: "120px", height: "1px", background: "rgba(201,168,76,0.3)" }} />
-              <span style={{
-                fontFamily: "'Cormorant Garamond',serif",
-                fontSize: "clamp(13px,1.4vw,17px)",
-                color: "rgba(255,255,255,0.4)",
-                fontStyle: "italic",
-                letterSpacing: "1px",
-              }}>
-                Trusted by Colleges, Corporates & Families across India
-              </span>
-              <span style={{ display: "block", flex: 1, maxWidth: "120px", height: "1px", background: "rgba(201,168,76,0.3)" }} />
-            </div>
-          </div>
-
+          <h2 className="text-3xl sm:text-5xl lg:text-7xl font-black text-white leading-tight uppercase">
+            {statsData.heading.main}{" "}
+            <span className="text-gold-gradient">
+              {statsData.heading.highlight}
+            </span>
+            {" "}{statsData.heading.suffix}
+          </h2>
+          <p className="font-['Cormorant_Garamond'] text-xl sm:text-2xl text-white/60 italic mt-4 sm:mt-6 max-w-2xl mx-auto">
+            "{statsData.subtitle}"
+          </p>
         </div>
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          {statsData.stats.map((stat, i) => (
+            <StatCard key={stat.label} stat={stat} index={i} started={started} />
+          ))}
+        </div>
+
+        {/* Bottom tagline */}
+        <div className={`text-center mt-16 md:mt-24 transition-opacity duration-1000 ease-out delay-700 ${started ? "opacity-100" : "opacity-0"}`}>
+          <div className="flex items-center justify-center gap-6 sm:gap-8">
+            <span className="block flex-1 max-w-[120px] sm:max-w-[200px] h-[1px] bg-secondary/20" />
+            <span className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-secondary/60 italic font-light tracking-wider sm:tracking-widest">
+              {statsData.tagline}
+            </span>
+            <span className="block flex-1 max-w-[120px] sm:max-w-[200px] h-[1px] bg-secondary/20" />
+          </div>
+        </div>
+
       </div>
     </section>
   );

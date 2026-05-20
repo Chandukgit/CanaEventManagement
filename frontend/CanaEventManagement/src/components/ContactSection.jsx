@@ -1,27 +1,34 @@
-import { useState, useEffect, useRef } from "react";
+// 1. Imports
+import React, { useState, useEffect, useRef } from "react";
+import { companyData } from "../data/companyData";
 
-// 🖼️ import contactBg from '../assets/images/contact/contact-bg.jpg'
+// 2. Dynamic Variables
+const contactData = {
+  sectionLabel: "Get In Touch",
+  heading: { main: "Let's Create", highlight: "Magic", suffix: "Together" },
+  subtitle: "Tell us about your dream event — we'll handle the rest",
+  description: "From a grand wedding to an electrifying college fest, our team is ready to turn your vision into reality. Reach out today and let's start planning your unforgettable event.",
+  contactInfo: [
+    { icon: "📍", label: "Head Office", value: companyData.address },
+    { icon: "📞", label: "Phone", value: companyData.phone, href: companyData.phoneLink },
+    { icon: "✉️", label: "Email", value: companyData.email, href: companyData.emailLink },
+    { icon: "🕐", label: "Working Hrs", value: companyData.workingHours }
+  ],
+  socialLinks: companyData.socials,
+  formOptions: ["Wedding", "Corporate Event", "College Fest", "Birthday Party", "Photo Shoot", "Other"],
+  messages: {
+    success: "Message Sent!",
+    successDesc: "We'll get back to you within 24 hours"
+  }
+};
 
-const CONTACT_INFO = [
-  { icon: "📍", label: "Head Office",  value: "No. 7A, Sundaramoorthy Street, Jafferkhanpet, Chennai - 600 083" },
-  { icon: "📞", label: "Phone",        value: "+91 98765 43210" },
-  { icon: "✉️", label: "Email",        value: "hello@canaeventmanagement.in" },
-  { icon: "🕐", label: "Working Hrs",  value: "Mon – Sat  |  9:00 AM – 7:00 PM" },
-];
-
+// 3. Component
 export default function ContactSection() {
-  const [form, setForm]   = useState({ firstName: "", lastName: "", phone: "", email: "", eventType: "", message: "" });
-  const [sent, setSent]   = useState(false);
+  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", eventType: "", message: "" });
+  const [sent, setSent] = useState(false);
   const [focused, setFocused] = useState("");
   const [inView, setInView] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
   const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.1 });
@@ -31,260 +38,178 @@ export default function ContactSection() {
 
   const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (!form.firstName || !form.email || !form.message) return;
     setSent(true);
     setTimeout(() => setSent(false), 4000);
     setForm({ firstName: "", lastName: "", phone: "", email: "", eventType: "", message: "" });
   };
 
-  const sectionTop = sectionRef.current?.offsetTop ?? 0;
-  const pOffset = (scrollY - sectionTop) * 0.3;
-
-  const inputStyle = (field) => ({
-    width: "100%",
-    padding: "16px 20px",
-    background: focused === field ? "rgba(201,168,76,0.05)" : "rgba(255,255,255,0.03)",
-    border: `1px solid ${focused === field ? "rgba(201,168,76,0.6)" : "rgba(255,255,255,0.1)"}`,
-    color: "#fff",
-    fontFamily: "'Cormorant Garamond',serif",
-    fontSize: "15px",
-    outline: "none",
-    transition: "all 0.3s ease",
-    boxShadow: focused === field ? "0 0 20px rgba(201,168,76,0.1), inset 0 0 10px rgba(201,168,76,0.03)" : "none",
-  });
+  const inputClass = (field) => `
+    w-full px-6 py-4 rounded-xl font-['Cormorant_Garamond'] text-xl text-white outline-none transition-all duration-300 bg-primary/40 border
+    ${focused === field 
+      ? 'border-secondary shadow-[0_0_20px_rgba(201,168,76,0.3)] bg-primary-light/40' 
+      : 'border-secondary/10 hover:border-secondary/30'
+    }
+  `;
 
   return (
-    <section ref={sectionRef} id="contact" style={{ position: "relative", overflow: "hidden", background: "#030303" }}>
+    <section ref={sectionRef} id="contact" className="relative overflow-hidden bg-primary py-20 md:py-32 border-t border-secondary/10">
 
-      {/* Parallax bg */}
-      <div style={{
-        position: "absolute", inset: "-20%",
-        /* swap: backgroundImage: `url(${contactBg})`, backgroundSize:"cover", backgroundPosition:"center" */
-        background: "linear-gradient(135deg, #060c06 0%, #0c1a0c 30%, #060c06 60%, #030303 100%)",
-        transform: `translateY(${pOffset}px)`,
-        zIndex: 0,
-      }} />
-      <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.72)", zIndex: 1 }} />
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-secondary/5 rounded-full blur-[60px] sm:blur-[120px] pointer-events-none -translate-y-1/3 translate-x-1/3 z-0" />
+      <div className="absolute bottom-0 left-0 w-[400px] sm:w-[800px] h-[400px] sm:h-[800px] bg-accent/5 rounded-full blur-[60px] sm:blur-[120px] pointer-events-none translate-y-1/3 -translate-x-1/3 z-0" />
 
-      {/* Animated particles / bokeh */}
-      {[...Array(8)].map((_, i) => (
-        <div key={i} style={{
-          position: "absolute",
-          width: `${20 + i * 15}px`, height: `${20 + i * 15}px`,
-          borderRadius: "50%",
-          background: `radial-gradient(circle, rgba(201,168,76,${0.06 - i * 0.005}) 0%, transparent 70%)`,
-          left: `${10 + i * 12}%`, top: `${20 + (i % 3) * 25}%`,
-          animation: `floatOrb ${5 + i * 0.7}s ease-in-out infinite alternate`,
-          animationDelay: `${i * 0.4}s`,
-          pointerEvents: "none", zIndex: 1,
-        }} />
-      ))}
-
-      {/* Gold beam top */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px",
-        background: "linear-gradient(90deg, transparent, #C9A84C, #F5D98B, #C9A84C, transparent)", zIndex: 3 }} />
-
-      <div style={{ position: "relative", zIndex: 2, maxWidth: "1200px", margin: "0 auto", padding: "100px 24px" }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "80px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "16px",
-            opacity: inView ? 1 : 0, transition: "all 0.8s ease" }}>
-            <span style={{ width: "50px", height: "1px", background: "linear-gradient(to right, transparent, #C9A84C)" }} />
-            <span style={{ fontFamily: "'Cinzel',serif", fontSize: "10px", letterSpacing: "6px", color: "#C9A84C", textTransform: "uppercase" }}>Get In Touch</span>
-            <span style={{ width: "50px", height: "1px", background: "linear-gradient(to left, transparent, #C9A84C)" }} />
+        <div className="text-center mb-16 md:mb-24">
+          <div className={`flex items-center justify-center gap-4 sm:gap-6 mb-6 transition-all duration-700 ease-out delay-100 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <span className="w-12 sm:w-16 h-[1px] bg-secondary/50" />
+            <span className="text-[10px] sm:text-[12px] tracking-[6px] sm:tracking-[8px] text-secondary font-bold uppercase">{contactData.sectionLabel}</span>
+            <span className="w-12 sm:w-16 h-[1px] bg-secondary/50" />
           </div>
-          <h2 style={{
-            fontFamily: "'Cinzel',serif", fontWeight: 900,
-            fontSize: "clamp(28px,5vw,64px)", color: "#fff", lineHeight: 1.1,
-            opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: "all 0.8s ease 0.15s",
-          }}>
-            Let's Create{" "}
-            <span style={{
-              background: "linear-gradient(90deg,#C9A84C,#F5D98B,#C9A84C)", backgroundSize: "200%",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              animation: "shimmer 3s linear infinite",
-            }}>Magic</span>
-            {" "}Together
+          <h2 className={`text-3xl md:text-6xl lg:text-7xl font-black text-white leading-tight uppercase transition-all duration-700 ease-out delay-200 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            {contactData.heading.main}{" "}
+            <span className="text-gold-gradient">
+              {contactData.heading.highlight}
+            </span>
+            {" "}{contactData.heading.suffix}
           </h2>
-          <p style={{
-            fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
-            fontSize: "clamp(14px,1.5vw,18px)", color: "rgba(255,255,255,0.4)", marginTop: "12px",
-            opacity: inView ? 1 : 0, transition: "all 0.8s ease 0.25s",
-          }}>Tell us about your dream event — we'll handle the rest</p>
+          <p className={`font-['Cormorant_Garamond'] italic text-xl sm:text-2xl text-white/60 mt-4 sm:mt-6 transition-all duration-700 ease-out delay-300 ${inView ? "opacity-100" : "opacity-0"}`}>
+            "{contactData.subtitle}"
+          </p>
         </div>
 
-        {/* Two column */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: "60px", alignItems: "start" }} className="contact-grid">
+        {/* Two column grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 xl:gap-32 items-start">
 
           {/* LEFT — Info */}
-          <div style={{ opacity: inView ? 1 : 0, transform: inView ? "translateX(0)" : "translateX(-30px)", transition: "all 0.9s ease 0.3s" }}>
-            <p style={{
-              fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
-              fontSize: "clamp(14px,1.5vw,18px)", color: "rgba(255,255,255,0.6)",
-              lineHeight: 1.9, marginBottom: "48px",
-            }}>
-              From a grand wedding to an electrifying college fest, our team is ready to turn your vision into reality. 
-              Reach out today and let's start planning your <span style={{ color: "#C9A84C" }}>unforgettable event</span>.
+          <div className={`transition-all duration-1000 ease-out delay-400 ${inView ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-10"}`}>
+            <p className="font-['Cormorant_Garamond'] italic text-xl sm:text-2xl text-white/50 leading-relaxed mb-8 sm:mb-12">
+              {contactData.description.split("unforgettable event")[0]}
+              <span className="text-secondary font-black not-italic drop-shadow-2xl">unforgettable event</span>
+              {contactData.description.split("unforgettable event")[1]}
             </p>
 
-            {CONTACT_INFO.map((info, i) => (
-              <div key={i} style={{
-                display: "flex", gap: "18px", alignItems: "flex-start",
-                padding: "20px 0",
-                borderBottom: "1px solid rgba(255,255,255,0.05)",
-              }}>
-                <div style={{
-                  width: "44px", height: "44px", flexShrink: 0, borderRadius: "50%",
-                  border: "1px solid rgba(201,168,76,0.3)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "18px", background: "rgba(201,168,76,0.05)",
-                }}>{info.icon}</div>
-                <div>
-                  <div style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "3px", color: "#C9A84C", textTransform: "uppercase", marginBottom: "4px" }}>
-                    {info.label}
+            <div className="flex flex-col gap-6 sm:gap-8">
+              {contactData.contactInfo.map((info, i) => (
+                <div key={i} className="flex gap-4 sm:gap-6 items-start p-6 sm:p-8 glass-card border-secondary/10 hover:border-secondary/35 transition-all duration-500 group rounded-2xl">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-full flex items-center justify-center text-2xl sm:text-3xl glass-card border-secondary/20 group-hover:bg-secondary group-hover:text-primary transition-all duration-500 animate-float" style={{ animationDelay: `${i * 0.5}s` }}>
+                    {info.icon}
                   </div>
-                  <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "15px", color: "rgba(255,255,255,0.7)", lineHeight: 1.6 }}>
-                    {info.value}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[9px] sm:text-[10px] tracking-[3px] sm:tracking-[4px] text-secondary uppercase font-black mb-1 sm:mb-2">
+                      {info.label}
+                    </div>
+                    {info.href ? (
+                      <a href={info.href} className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/80 font-light leading-relaxed hover:text-secondary transition-colors break-all block">
+                        {info.value}
+                      </a>
+                    ) : (
+                      <div className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/80 font-light leading-relaxed break-words">
+                        {info.value}
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
 
             {/* Social icons */}
-            <div style={{ display: "flex", gap: "12px", marginTop: "32px" }}>
-              {[["📸","Instagram","#"],["👤","Facebook","#"],["▶","YouTube","#"],["💬","WhatsApp","#"]].map(([icon, label, href]) => (
-                <a key={label} href={href} title={label} style={{
-                  width: "44px", height: "44px",
-                  border: "1px solid rgba(201,168,76,0.3)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: "18px", color: "#C9A84C",
-                  transition: "all 0.3s ease",
-                  textDecoration: "none",
-                  background: "rgba(201,168,76,0.03)",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,168,76,0.15)"; e.currentTarget.style.borderColor = "#C9A84C"; e.currentTarget.style.transform = "translateY(-3px)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(201,168,76,0.03)"; e.currentTarget.style.borderColor = "rgba(201,168,76,0.3)"; e.currentTarget.style.transform = "translateY(0)"; }}
-                >{icon}</a>
+            <div className="flex gap-4 sm:gap-6 mt-8 sm:mt-12">
+              {contactData.socialLinks.map(({ icon, label, url }) => (
+                <a key={label} href={url} title={label} target="_blank" rel="noreferrer"
+                   className="w-12 h-12 sm:w-14 sm:h-14 rounded-full glass-card border-secondary/20 flex items-center justify-center text-xl sm:text-2xl text-secondary hover:bg-secondary hover:text-primary hover:-translate-y-2 transition-all duration-500 shadow-2xl">
+                  <span>{icon}</span>
+                </a>
               ))}
             </div>
           </div>
 
-          {/* RIGHT — Form */}
-          <div style={{
-            padding: "48px 44px",
-            border: "1px solid rgba(201,168,76,0.18)",
-            background: "rgba(0,0,0,0.5)",
-            backdropFilter: "blur(20px)",
-            position: "relative",
-            opacity: inView ? 1 : 0,
-            transform: inView ? "translateX(0)" : "translateX(30px)",
-            transition: "all 0.9s ease 0.4s",
-          }}>
-            {/* Corner accents */}
-            {[["top","left"],["top","right"],["bottom","left"],["bottom","right"]].map(([v,h]) => (
-              <div key={`${v}${h}`} style={{
-                position: "absolute", [v]: "-1px", [h]: "-1px",
-                width: "28px", height: "28px",
-                borderTop: v === "top" ? "2px solid #C9A84C" : "none",
-                borderBottom: v === "bottom" ? "2px solid #C9A84C" : "none",
-                borderLeft: h === "left" ? "2px solid #C9A84C" : "none",
-                borderRight: h === "right" ? "2px solid #C9A84C" : "none",
-              }} />
-            ))}
+          {/* RIGHT — Form (Glassmorphism) */}
+          <div className={`transition-all duration-1000 ease-out delay-500 ${inView ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"}`}>
+            <div className="glass-card p-6 sm:p-10 md:p-14 border-secondary/10 shadow-2xl relative overflow-hidden bg-gradient-to-br from-primary-light/40 to-transparent rounded-[2rem] sm:rounded-[3rem]">
+              
+              <div className="text-[10px] sm:text-[12px] tracking-[4px] sm:tracking-[6px] text-secondary uppercase font-black mb-6 sm:mb-10 flex items-center gap-3 sm:gap-4">
+                <span className="w-6 sm:w-8 h-[1px] bg-secondary" />
+                Send A Message
+              </div>
 
-            <div style={{ fontFamily: "'Cinzel',serif", fontSize: "11px", letterSpacing: "4px", color: "#C9A84C", textTransform: "uppercase", marginBottom: "32px" }}>
-              ✦ Send A Message
+              {sent ? (
+                <div className="py-16 sm:py-24 text-center animate-reveal">
+                  <div className="text-5xl sm:text-7xl mb-6 sm:mb-8 animate-float">✨</div>
+                  <div className="text-xl sm:text-2xl tracking-[3px] sm:tracking-[4px] text-white uppercase font-black mb-2 sm:mb-4">
+                    {contactData.messages.success}
+                  </div>
+                  <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/50 italic">
+                    "{contactData.messages.successDesc}"
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 animate-reveal">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
+                    <div>
+                      <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">First Name *</label>
+                      <input name="firstName" value={form.firstName} onChange={handleChange} required
+                        onFocus={() => setFocused("firstName")} onBlur={() => setFocused("")}
+                        placeholder="John" className={inputClass("firstName")} />
+                    </div>
+                    <div>
+                      <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Last Name</label>
+                      <input name="lastName" value={form.lastName} onChange={handleChange}
+                        onFocus={() => setFocused("lastName")} onBlur={() => setFocused("")}
+                        placeholder="Doe" className={inputClass("lastName")} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Phone Number</label>
+                    <input name="phone" value={form.phone} onChange={handleChange}
+                      onFocus={() => setFocused("phone")} onBlur={() => setFocused("")}
+                      placeholder="+91 98765 43210" className={inputClass("phone")} />
+                  </div>
+
+                  <div>
+                    <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Email Address *</label>
+                    <input name="email" value={form.email} onChange={handleChange} required
+                      onFocus={() => setFocused("email")} onBlur={() => setFocused("")}
+                      placeholder="hello@world.com" className={inputClass("email")} />
+                  </div>
+
+                  <div>
+                    <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Event Type</label>
+                    <div className="relative">
+                      <select name="eventType" value={form.eventType} onChange={handleChange}
+                        onFocus={() => setFocused("eventType")} onBlur={() => setFocused("")}
+                        className={`${inputClass("eventType")} cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%20fill%3D%22%23C9A84C%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_20px_center]`}>
+                        <option value="" className="bg-primary">Select event type…</option>
+                        {contactData.formOptions.map(o => <option key={o} value={o} className="bg-primary">{o}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Your Message *</label>
+                    <textarea name="message" value={form.message} onChange={handleChange} required
+                      onFocus={() => setFocused("message")} onBlur={() => setFocused("")}
+                      placeholder="Share your vision..."
+                      rows={4} className={`${inputClass("message")} resize-none`} />
+                  </div>
+
+                  <button type="submit" className="btn-premium w-full py-4 sm:py-6 text-[12px] sm:text-[14px]">
+                    ✦ Send Magic Message ✦
+                  </button>
+                </form>
+              )}
             </div>
-
-            {sent ? (
-              <div style={{
-                padding: "40px", textAlign: "center",
-                border: "1px solid rgba(201,168,76,0.3)",
-                background: "rgba(201,168,76,0.05)",
-              }}>
-                <div style={{ fontSize: "48px", marginBottom: "16px" }}>🎉</div>
-                <div style={{ fontFamily: "'Cinzel',serif", fontSize: "13px", letterSpacing: "2px", color: "#C9A84C", textTransform: "uppercase" }}>
-                  Message Sent!
-                </div>
-                <p style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", color: "rgba(255,255,255,0.5)", marginTop: "8px" }}>
-                  We'll get back to you within 24 hours
-                </p>
-              </div>
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                  <div>
-                    <label style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "2px", color: "rgba(201,168,76,0.6)", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>First Name *</label>
-                    <input name="firstName" value={form.firstName} onChange={handleChange}
-                      onFocus={() => setFocused("firstName")} onBlur={() => setFocused("")}
-                      placeholder="Your first name" style={inputStyle("firstName")} />
-                  </div>
-                  <div>
-                    <label style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "2px", color: "rgba(201,168,76,0.6)", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Last Name</label>
-                    <input name="lastName" value={form.lastName} onChange={handleChange}
-                      onFocus={() => setFocused("lastName")} onBlur={() => setFocused("")}
-                      placeholder="Your last name" style={inputStyle("lastName")} />
-                  </div>
-                </div>
-                <div>
-                  <label style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "2px", color: "rgba(201,168,76,0.6)", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Phone Number</label>
-                  <input name="phone" value={form.phone} onChange={handleChange}
-                    onFocus={() => setFocused("phone")} onBlur={() => setFocused("")}
-                    placeholder="+91 98765 43210" style={inputStyle("phone")} />
-                </div>
-                <div>
-                  <label style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "2px", color: "rgba(201,168,76,0.6)", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Email Address *</label>
-                  <input name="email" value={form.email} onChange={handleChange}
-                    onFocus={() => setFocused("email")} onBlur={() => setFocused("")}
-                    placeholder="your@email.com" style={inputStyle("email")} />
-                </div>
-                <div>
-                  <label style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "2px", color: "rgba(201,168,76,0.6)", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Event Type</label>
-                  <select name="eventType" value={form.eventType} onChange={handleChange}
-                    onFocus={() => setFocused("eventType")} onBlur={() => setFocused("")}
-                    style={{ ...inputStyle("eventType"), cursor: "pointer" }}>
-                    <option value="" style={{ background: "#0a0a0a" }}>Select event type…</option>
-                    {["Wedding","Corporate Event","College Fest","Birthday Party","Photo Shoot","Other"].map(o => (
-                      <option key={o} value={o} style={{ background: "#0a0a0a" }}>{o}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "2px", color: "rgba(201,168,76,0.6)", textTransform: "uppercase", display: "block", marginBottom: "6px" }}>Your Message *</label>
-                  <textarea name="message" value={form.message} onChange={handleChange}
-                    onFocus={() => setFocused("message")} onBlur={() => setFocused("")}
-                    placeholder="Tell us about your event — date, venue, guest count, special requirements…"
-                    rows={4} style={{ ...inputStyle("message"), resize: "vertical" }} />
-                </div>
-                <button onClick={handleSubmit} style={{
-                  padding: "18px 0", width: "100%",
-                  background: "linear-gradient(135deg,#C9A84C,#F5D98B,#C9A84C)",
-                  backgroundSize: "200%",
-                  border: "none", cursor: "pointer",
-                  fontFamily: "'Cinzel',serif", fontSize: "11px",
-                  letterSpacing: "4px", fontWeight: 700,
-                  color: "#000", textTransform: "uppercase",
-                  transition: "all 0.3s ease",
-                  position: "relative", overflow: "hidden",
-                  animation: "shimmer 3s linear infinite",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 40px rgba(201,168,76,0.4)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "none"; }}
-                >
-                  ✦ Send Message ✦
-                </button>
-              </div>
-            )}
           </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes shimmer   { 0%{background-position:-200% center} 100%{background-position:200% center} }
-        @keyframes floatOrb  { 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-20px) scale(1.1)} }
-        @media(max-width:768px){ .contact-grid{ grid-template-columns:1fr !important; } }
+        @keyframes floatOrb { 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-30px) scale(1.05)} }
       `}</style>
     </section>
   );

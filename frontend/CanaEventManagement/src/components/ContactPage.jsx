@@ -1,146 +1,189 @@
+// 1. Imports
 import React from 'react';
 import { 
-  Phone, Mail, MapPin, Instagram, Facebook, Twitter, Linkedin, 
-  MessageCircle, Clock, Globe, ShieldCheck, Headset, ExternalLink, 
-  Send, Zap 
+  Phone, Mail, MapPin, MessageCircle, Clock, ExternalLink, Send 
 } from 'lucide-react';
+import { companyData } from "../data/companyData";
 
-const ContactPage = () => {
-  // Contact Categories for a high-production feel
-  const departments = [
-    {
-      title: "General Inquiries",
-      description: "For basic information regarding our event packages and availability.",
-      phone: "+91 90000 11111",
-      email: "hello@dreambright.in",
-      icon: <Globe className="w-6 h-6 text-blue-600" />
-    },
-    {
-      title: "VIP & Wedding Concierge",
-      description: "Dedicated support for luxury weddings and high-profile private events.",
-      phone: "+91 90000 22222",
-      email: "luxury@dreambright.in",
-      icon: <ShieldCheck className="w-6 h-6 text-rose-600" />
-    },
-    {
-      title: "Technical & Production",
-      description: "Contact our AV and Stage production team for technical specifications.",
-      phone: "+91 90000 33333",
-      email: "production@dreambright.in",
-      icon: <Zap className="w-6 h-6 text-yellow-600" />
-    },
-    {
-      title: "Careers & HR",
-      description: "Join our team of youthful professionals and event architects.",
-      phone: "+91 90000 44444",
-      email: "careers@dreambright.in",
-      icon: <Headset className="w-6 h-6 text-emerald-600" />
-    }
-  ];
+// 2. Dynamic Variables
+const contactData = {
+  header: {
+    subtitle: "Get In Touch",
+    title: "CONTACT US",
+    desc: "We are available for event emergencies and production consultations. Connect with our specialized departments for a seamless experience."
+  },
+  departments: companyData.departments,
+  globalPresence: {
+    title: "Our Headquarters",
+    location: companyData.address,
+    timing: companyData.workingHours,
+    button: "GET DIRECTIONS"
+  },
+  socialLinks: companyData.socials,
+  supportWidget: {
+    title: "Instant Support?",
+    desc: "Start a live chat with our project managers for immediate assistance regarding your event.",
+    button: "LIVE WHATSAPP CHAT"
+  },
+  signature: "THE POWER OF PRODUCTION"
+};
 
-  const socialLinks = [
-    { name: "WhatsApp", icon: <MessageCircle />, color: "bg-green-500", handle: "+91 98765 43210", link: "#" },
-    { name: "Instagram", icon: <Instagram />, color: "bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-500", handle: "@dreambright_india", link: "#" },
-    { name: "Facebook", icon: <Facebook />, color: "bg-blue-600", handle: "Dreambright India Events", link: "#" },
-    { name: "LinkedIn", icon: <Linkedin />, color: "bg-blue-700", handle: "Dreambright India Official", link: "#" },
-    { name: "X (Twitter)", icon: <Twitter />, color: "bg-black", handle: "@DreamBright_IN", link: "#" },
-  ];
+// Helper to get Lucide icons for social handles
+const getSocialIcon = (name) => {
+  switch (name.toLowerCase()) {
+    case 'whatsapp':
+      return <MessageCircle size={20} />;
+    case 'instagram':
+      return <span className="text-xl">📸</span>;
+    case 'facebook':
+      return <span className="text-xl">👤</span>;
+    case 'youtube':
+      return <span className="text-xl">▶</span>;
+    default:
+      return <ExternalLink size={20} />;
+  }
+};
 
+// Helper to get Lucide icons for departments
+const getDeptIcon = (idx) => {
+  switch (idx) {
+    case 0:
+      return "🌐";
+    case 1:
+      return "💍";
+    case 2:
+      return "⚡";
+    case 3:
+      return "🤝";
+    default:
+      return "✨";
+  }
+};
+
+// 3. Component
+export default function ContactPage() {
   return (
-    <div className="bg-gray-50 min-h-screen font-sans">
+    <div className="bg-primary min-h-screen font-sans relative overflow-hidden text-white selection:bg-secondary/30">
+      
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[300px] sm:w-[800px] h-[300px] sm:h-[800px] bg-secondary/5 rounded-full blur-[60px] sm:blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2 z-0" />
+      <div className="absolute bottom-0 left-0 w-[300px] sm:w-[600px] h-[300px] sm:h-[600px] bg-accent/5 rounded-full blur-[60px] sm:blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/3 z-0" />
+
       {/* --- Hero Header --- */}
-      <div className="bg-white border-b border-gray-100 pt-20 pb-12 px-6 text-center">
-        <h4 className="text-blue-600 font-bold uppercase tracking-widest mb-4 text-sm">Get In Touch</h4>
-        <h1 className="text-5xl md:text-7xl font-black text-gray-900 tracking-tighter mb-6 italic">CONTACT US</h1>
-        <p className="max-w-2xl mx-auto text-gray-500 text-lg">
-          We are available 24/7 for event emergencies and production consultations. 
-          Connect with our specialized departments for a seamless experience.
+      <div className="relative z-10 bg-primary-light/40 backdrop-blur-2xl border-b border-secondary/10 pt-32 sm:pt-40 pb-16 sm:pb-24 px-4 sm:px-6 text-center shadow-2xl">
+        <h4 className="text-[10px] sm:text-[12px] font-black uppercase tracking-[4px] sm:tracking-[8px] mb-4 sm:mb-6 text-secondary flex items-center justify-center gap-3 sm:gap-4">
+          <span className="w-8 sm:w-12 h-[1px] bg-secondary/50" />
+          {contactData.header.subtitle}
+          <span className="w-8 sm:w-12 h-[1px] bg-secondary/50" />
+        </h4>
+        <h1 className="text-3xl sm:text-5xl md:text-7xl font-black text-white tracking-[6px] sm:tracking-[15px] md:tracking-[20px] mb-6 sm:mb-8 drop-shadow-2xl uppercase">
+          {contactData.header.title}
+        </h1>
+        <p className="font-['Cormorant_Garamond'] max-w-3xl mx-auto text-white/50 text-xl sm:text-3xl italic leading-relaxed px-4">
+          "{contactData.header.desc}"
         </p>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 sm:py-32">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 lg:gap-24 xl:gap-32">
           
           {/* --- Left Column: Department Grid --- */}
-          <div className="lg:col-span-2 space-y-8">
-            <h2 className="text-2xl font-bold flex items-center gap-3">
-              Direct Channels <span className="h-px w-20 bg-gray-200"></span>
+          <div className="lg:col-span-2 space-y-12 sm:space-y-16 animate-reveal">
+            <h2 className="text-2xl sm:text-3xl font-black flex items-center gap-4 sm:gap-6 text-white tracking-[3px] sm:tracking-[5px] uppercase">
+              Direct Channels <span className="h-[1px] flex-1 max-w-[128px] bg-secondary/50"></span>
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {departments.map((dept, idx) => (
-                <div key={idx} className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                  <div className="mb-4">{dept.icon}</div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-2">{dept.title}</h3>
-                  <p className="text-gray-500 text-sm mb-6 leading-relaxed">{dept.description}</p>
-                  <div className="space-y-3">
-                    <a href={`tel:${dept.phone}`} className="flex items-center gap-3 text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                      <Phone size={16} /> {dept.phone}
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10">
+              {contactData.departments.map((dept, idx) => (
+                <div key={idx} className="glass-card p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-secondary/10 hover:border-secondary/35 hover:shadow-[0_20px_50px_rgba(201,168,76,0.1)] hover:-translate-y-2 transition-all duration-500 group bg-primary-light/30">
+                  <div className="mb-6 sm:mb-8 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl sm:rounded-3xl glass-card border-secondary/20 flex items-center justify-center text-secondary text-3xl group-hover:scale-110 group-hover:bg-secondary group-hover:text-primary transition-all duration-500 animate-float" style={{ animationDelay: `${idx * 0.3}s` }}>
+                    <span>{getDeptIcon(idx)}</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-white mb-3 sm:mb-4 tracking-[1px] sm:tracking-[2px] uppercase">{dept.title}</h3>
+                  <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/40 mb-6 sm:mb-10 italic leading-relaxed">"{dept.description}"</p>
+                  
+                  <div className="space-y-4 sm:space-y-6 font-['Cormorant_Garamond'] text-xl sm:text-2xl font-medium">
+                    <a href={dept.phoneLink} className="flex items-center gap-3 sm:gap-4 text-white/70 hover:text-secondary transition-all duration-500 hover:translate-x-2">
+                      <Phone size={18} className="text-secondary/50" /> {dept.phone}
                     </a>
-                    <a href={`mailto:${dept.email}`} className="flex items-center gap-3 text-gray-700 hover:text-blue-600 font-medium transition-colors">
-                      <Mail size={16} /> {dept.email}
+                    <a href={dept.emailLink} className="flex items-center gap-3 sm:gap-4 text-white/70 hover:text-secondary transition-all duration-500 hover:translate-x-2 break-all">
+                      <Mail size={18} className="text-secondary/50" /> {dept.email}
                     </a>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* --- Global Presence / Office Info --- */}
-            <div className="bg-blue-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden">
-              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+            {/* --- Headquarters Section --- */}
+            <div className="glass-card rounded-[2rem] sm:rounded-[4rem] p-8 sm:p-16 md:p-20 text-white relative overflow-hidden shadow-2xl bg-gradient-to-br from-primary-light/40 to-primary border-secondary/10">
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIwLjUiIGN5PSIwLjUiIHI9IjAuNSIgZmlsbD0icmdiYSgyMDEsMTY4LDc2LDAuMSkiPjwvY2lyY2xlPgo8L3N2Zz4=')] opacity-20 pointer-events-none" />
+              
+              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-10 md:gap-16">
                 <div className="text-center md:text-left">
-                  <h3 className="text-2xl font-bold mb-2">Our Headquarters</h3>
-                  <p className="text-blue-200 mb-6 flex items-center justify-center md:justify-start gap-2">
-                    <MapPin size={18} /> 123 Event Arena, South India, IND
+                  <h3 className="text-3xl sm:text-4xl font-black mb-4 sm:mb-6 tracking-[3px] sm:tracking-[5px] uppercase text-white drop-shadow-2xl">{contactData.globalPresence.title}</h3>
+                  <p className="font-['Cormorant_Garamond'] text-xl sm:text-2xl text-white/50 mb-6 sm:mb-10 flex items-center justify-center md:justify-start gap-3 sm:gap-4 italic">
+                    <MapPin size={22} className="text-secondary shrink-0" /> {contactData.globalPresence.location}
                   </p>
-                  <div className="flex items-center gap-4 text-sm font-bold bg-blue-800/50 p-4 rounded-xl inline-flex">
-                    <Clock size={18} className="text-blue-300" />
-                    <span>MON - SAT: 09:00 AM - 08:00 PM</span>
+                  <div className="flex items-center gap-3 sm:gap-4 text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[4px] font-black bg-primary/40 backdrop-blur-3xl p-4 sm:p-6 rounded-2xl border border-secondary/20 inline-flex shadow-2xl">
+                    <Clock size={18} className="text-secondary animate-pulse" />
+                    <span className="text-white/80">{contactData.globalPresence.timing}</span>
                   </div>
                 </div>
-                <button className="bg-white text-blue-900 px-8 py-4 rounded-full font-black hover:bg-blue-50 transition-all flex items-center gap-2">
-                  GET DIRECTIONS <ExternalLink size={18} />
-                </button>
+                <a 
+                  href={`https://maps.google.com/?q=${encodeURIComponent(contactData.globalPresence.location)}`} 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="btn-premium px-10 sm:px-12 py-4 sm:py-6 text-[12px] sm:text-[14px] whitespace-nowrap inline-flex items-center gap-2"
+                >
+                  {contactData.globalPresence.button} <ExternalLink size={18} />
+                </a>
               </div>
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-20 -mt-20"></div>
             </div>
           </div>
 
           {/* --- Right Column: Social Ecosystem --- */}
-          <div className="space-y-8">
-            <h2 className="text-2xl font-bold flex items-center gap-3">
-              Social Connect <span className="h-px w-20 bg-gray-200"></span>
+          <div className="space-y-12 sm:space-y-16 animate-reveal" style={{ animationDelay: '0.3s' }}>
+            <h2 className="text-2xl sm:text-3xl font-black flex items-center gap-4 sm:gap-6 text-white tracking-[3px] sm:tracking-[5px] uppercase">
+              Social Connect <span className="h-[1px] flex-1 max-w-[96px] bg-secondary/50"></span>
             </h2>
-            <div className="flex flex-col gap-4">
-              {socialLinks.map((social, idx) => (
+            
+            <div className="flex flex-col gap-6 sm:gap-8">
+              {contactData.socialLinks.map((social, idx) => (
                 <a 
                   key={idx} 
-                  href={social.link}
-                  className="group flex items-center justify-between p-5 bg-white rounded-2xl border border-gray-100 hover:border-transparent hover:ring-2 hover:ring-offset-2 transition-all"
-                  style={{'--tw-ring-color': social.color.includes('bg-') ? 'currentColor' : '#3b82f6'}}
+                  href={social.url}
+                  target="_blank" 
+                  rel="noreferrer"
+                  className="group flex items-center justify-between p-6 sm:p-8 glass-card rounded-2xl sm:rounded-[2rem] border-secondary/10 hover:border-secondary/40 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-primary-light/20"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className={`${social.color} p-3 rounded-xl text-white shadow-lg`}>
-                      {social.icon}
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl glass-card border-secondary/20 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
+                      {getSocialIcon(social.name)}
                     </div>
                     <div>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-tighter">{social.name}</p>
-                      <p className="font-bold text-gray-900">{social.handle}</p>
+                      <p className="text-[9px] sm:text-[10px] font-black text-secondary/60 uppercase tracking-[2px] sm:tracking-[4px] mb-1 sm:mb-2">{social.label}</p>
+                      <p className="font-['Cormorant_Garamond'] text-xl sm:text-2xl font-bold text-white leading-none">{social.handle}</p>
                     </div>
                   </div>
-                  <Send size={16} className="text-gray-300 group-hover:text-blue-600 transition-colors" />
+                  <Send size={20} className="text-secondary/20 group-hover:text-secondary group-hover:translate-x-2 group-hover:-translate-y-1 transition-all duration-500" />
                 </a>
               ))}
             </div>
 
-            {/* Newsletter / Instant Chat CTA */}
-            <div className="p-8 bg-gray-900 rounded-[2rem] text-white">
-              <h3 className="text-xl font-bold mb-4 italic">Instant Support?</h3>
-              <p className="text-gray-400 text-sm mb-6">
-                Start a live chat with our project managers for immediate assistance regarding your event.
+            {/* Support Widget */}
+            <div className="p-8 sm:p-16 glass-card border-secondary/10 rounded-[2rem] sm:rounded-[4rem] shadow-2xl text-center bg-gradient-to-b from-primary-light/40 to-transparent">
+              <h3 className="text-2xl sm:text-3xl font-black mb-4 sm:mb-6 tracking-[3px] sm:tracking-[4px] text-white uppercase">{contactData.supportWidget.title}</h3>
+              <p className="font-['Cormorant_Garamond'] text-lg sm:text-2xl text-white/40 mb-8 sm:mb-12 italic leading-relaxed">
+                "{contactData.supportWidget.desc}"
               </p>
-              <button className="w-full py-4 bg-blue-600 rounded-xl font-bold hover:bg-blue-500 transition-colors flex items-center justify-center gap-2">
-                <MessageCircle size={18} /> LIVE WHATSAPP CHAT
-              </button>
+              <a 
+                href={companyData.socials.find(s => s.name === 'WhatsApp')?.url} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="btn-premium w-full py-4 sm:py-6 text-[12px] sm:text-[14px] flex items-center justify-center gap-3 sm:gap-4"
+              >
+                <MessageCircle size={20} /> {contactData.supportWidget.button}
+              </a>
             </div>
           </div>
 
@@ -148,11 +191,9 @@ const ContactPage = () => {
       </div>
 
       {/* --- Footer Signature --- */}
-      <div className="py-12 text-center text-gray-400 text-sm uppercase tracking-[0.3em]">
-        " THE POWER OF PRODUCTION "
+      <div className="pb-16 text-center text-secondary/30 font-black text-[10px] sm:text-[12px] uppercase tracking-[8px] sm:tracking-[15px] relative z-10 animate-pulse">
+        " {contactData.signature} "
       </div>
     </div>
   );
-};
-
-export default ContactPage;
+}
