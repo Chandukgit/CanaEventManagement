@@ -1,49 +1,50 @@
-import { useEffect, useRef, useState } from "react";
+// 1. Imports
+import React, { useEffect, useRef, useState } from "react";
+import { companyData } from "../data/companyData";
 
-// 🖼️ Replace these with your real client logos from src/assets/images/clients/
-// import logo1 from '../assets/images/clients/simats.png'
-// Each client: { name, logo (optional), category }
+// 2. Dynamic Variables
+const clientsData = {
+  sectionLabel: "Trust & Legacy",
+  heading: { main: "Who", highlight: "Trusts Us" },
+  tagline: "Trusted by 300+ organisations across South India & beyond",
+  tabs: [
+    { id: "clients", label: "Our Clients" },
+    { id: "events", label: "Success Events" }
+  ],
+  clients: [
+    { name: "SIMATS", cat: "College", emoji: "🎓" },
+    { name: "SSN Engineering", cat: "College", emoji: "🏛️" },
+    { name: "Bosch", cat: "Corporate", emoji: "⚙️" },
+    { name: "L&T", cat: "Corporate", emoji: "🏗️" },
+    { name: "Ramco", cat: "Corporate", emoji: "🏭" },
+    { name: "Amazon", cat: "Corporate", emoji: "📦" },
+    { name: "Nissan", cat: "Corporate", emoji: "🚗" },
+    { name: "VIT University", cat: "College", emoji: "🎓" },
+    { name: "Anna University", cat: "College", emoji: "🏫" },
+    { name: "Vel Tech", cat: "College", emoji: "🎓" },
+    { name: "CSIR-CLRI", cat: "Research", emoji: "🔬" },
+    { name: "Sathyabama", cat: "College", emoji: "🎓" },
+    { name: "Madha Engg", cat: "College", emoji: "🏫" },
+    { name: "Kubota", cat: "Corporate", emoji: "🌾" },
+    { name: "Chennai IT", cat: "College", emoji: "💻" },
+    { name: "Saveetha Univ", cat: "College", emoji: "🎓" },
+  ],
+  events: [
+    { icon: "💍", title: "Royal Wedding", loc: "Chennai Palace Grounds", year: "2024", tag: "Wedding" },
+    { icon: "🎓", title: "AEGON Fest 2024", loc: "Saveetha Engineering", year: "2024", tag: "College Fest" },
+    { icon: "🏢", title: "Annual Corp Gala", loc: "ITC Grand Chola", year: "2023", tag: "Corporate" },
+    { icon: "📸", title: "Fashion Shoot", loc: "ECR Beachfront Studio", year: "2024", tag: "Photo Shoot" },
+    { icon: "🎂", title: "Grand 50th B'day", loc: "Leela Palace Chennai", year: "2024", tag: "Birthday" },
+    { icon: "🚀", title: "Product Launch", loc: "World Trade Centre", year: "2023", tag: "Corporate" },
+  ]
+};
 
-const CLIENTS = [
-  { name: "SIMATS",           cat: "College",    emoji: "🎓" },
-  { name: "SSN Engineering",  cat: "College",    emoji: "🏛️" },
-  { name: "Bosch",            cat: "Corporate",  emoji: "⚙️" },
-  { name: "L&T",              cat: "Corporate",  emoji: "🏗️" },
-  { name: "Ramco",            cat: "Corporate",  emoji: "🏭" },
-  { name: "Amazon",           cat: "Corporate",  emoji: "📦" },
-  { name: "Nissan",           cat: "Corporate",  emoji: "🚗" },
-  { name: "VIT University",   cat: "College",    emoji: "🎓" },
-  { name: "Anna University",  cat: "College",    emoji: "🏫" },
-  { name: "Vel Tech",         cat: "College",    emoji: "🎓" },
-  { name: "CSIR-CLRI",        cat: "Research",   emoji: "🔬" },
-  { name: "Sathyabama",       cat: "College",    emoji: "🎓" },
-  { name: "Madha Engg",       cat: "College",    emoji: "🏫" },
-  { name: "Kubota",           cat: "Corporate",  emoji: "🌾" },
-  { name: "Chennai IT",       cat: "College",    emoji: "💻" },
-  { name: "Saveetha Univ",    cat: "College",    emoji: "🎓" },
-];
-
-const SUCCESS_EVENTS = [
-  { icon: "💍", title: "Royal Wedding",      loc: "Chennai Palace Grounds",  year: "2024", tag: "Wedding" },
-  { icon: "🎓", title: "AEGON Fest 2024",    loc: "Saveetha Engineering",    year: "2024", tag: "College Fest" },
-  { icon: "🏢", title: "Annual Corp Gala",   loc: "ITC Grand Chola",         year: "2023", tag: "Corporate" },
-  { icon: "📸", title: "Fashion Shoot",      loc: "ECR Beachfront Studio",   year: "2024", tag: "Photo Shoot" },
-  { icon: "🎂", title: "Grand 50th B'day",   loc: "Leela Palace Chennai",    year: "2024", tag: "Birthday" },
-  { icon: "🚀", title: "Product Launch",     loc: "World Trade Centre",      year: "2023", tag: "Corporate" },
-];
-
+// 3. Component
 export default function ClientsSection() {
-  const [inView, setInView]       = useState(false);
-  const [paused, setPaused]       = useState(false);
+  const [inView, setInView] = useState(false);
+  const [paused, setPaused] = useState(false);
   const [activeTab, setActiveTab] = useState("clients");
-  const [scrollY, setScrollY]     = useState(0);
   const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.1 });
@@ -51,125 +52,78 @@ export default function ClientsSection() {
     return () => obs.disconnect();
   }, []);
 
-  const pOffset = ((sectionRef.current?.offsetTop ?? 0) - scrollY) * -0.15;
-
-  // Duplicate for infinite scroll
-  const marqueeItems = [...CLIENTS, ...CLIENTS];
+  const marqueeItems = [...clientsData.clients, ...clientsData.clients];
 
   return (
-    <section ref={sectionRef} id="clients" style={{ position: "relative", overflow: "hidden", background: "#030303", padding: "120px 0" }}>
+    <section ref={sectionRef} id="clients" className="relative overflow-hidden bg-primary py-20 md:py-32 border-b border-secondary/10">
 
-      {/* Parallax mesh bg */}
-      <div style={{
-        position: "absolute", inset: "-10%",
-        background: "radial-gradient(ellipse 80% 60% at 20% 60%, #0a0e1a 0%, #030303 60%), radial-gradient(ellipse 60% 40% at 80% 20%, #1a0e0a 0%, transparent 60%)",
-        transform: `translateY(${pOffset}px)`, zIndex: 0,
-      }} />
-      <div style={{
-        position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",
-        backgroundImage: `linear-gradient(rgba(201,168,76,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.025) 1px, transparent 1px)`,
-        backgroundSize: "80px 80px",
-      }} />
+      {/* Soft Glow Orbs */}
+      <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-secondary/5 rounded-full blur-[60px] sm:blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/4 z-0" />
+      <div className="absolute bottom-0 left-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-accent/5 rounded-full blur-[60px] sm:blur-[100px] pointer-events-none translate-y-1/3 -translate-x-1/4 z-0" />
 
-      {/* Gold beam top */}
-      <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "2px",
-        background: "linear-gradient(90deg, transparent, #C9A84C, #F5D98B, #C9A84C, transparent)", zIndex: 2 }} />
-
-      <div style={{ position: "relative", zIndex: 1, maxWidth: "1200px", margin: "0 auto", padding: "0 24px" }}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "56px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "16px",
-            opacity: inView ? 1 : 0, transition: "all 0.8s ease 0.1s" }}>
-            <span style={{ width: "50px", height: "1px", background: "linear-gradient(to right, transparent, #C9A84C)" }} />
-            <span style={{ fontFamily: "'Cinzel',serif", fontSize: "10px", letterSpacing: "6px", color: "#C9A84C", textTransform: "uppercase" }}>Trust & Legacy</span>
-            <span style={{ width: "50px", height: "1px", background: "linear-gradient(to left, transparent, #C9A84C)" }} />
+        <div className="text-center mb-12 sm:mb-16">
+          <div className={`flex items-center justify-center gap-4 md:gap-6 mb-6 transition-all duration-700 ease-out delay-100 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <span className="w-12 md:w-16 h-[1px] bg-secondary/50" />
+            <span className="text-[10px] sm:text-[12px] tracking-[6px] sm:tracking-[8px] text-secondary font-bold uppercase">{clientsData.sectionLabel}</span>
+            <span className="w-12 md:w-16 h-[1px] bg-secondary/50" />
           </div>
-          <h2 style={{
-            fontFamily: "'Cinzel',serif", fontWeight: 900,
-            fontSize: "clamp(28px,4.5vw,60px)", color: "#fff", lineHeight: 1.1,
-            opacity: inView ? 1 : 0, transform: inView ? "translateY(0)" : "translateY(24px)", transition: "all 0.8s ease 0.2s",
-          }}>
-            Who{" "}
-            <span style={{
-              background: "linear-gradient(90deg,#C9A84C,#F5D98B,#C9A84C)", backgroundSize: "200%",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              animation: "shimmer 3s linear infinite",
-            }}>Trusts Us</span>
+          <h2 className={`text-3xl md:text-6xl font-black text-white leading-tight uppercase transition-all duration-700 ease-out delay-200 ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            {clientsData.heading.main}{" "}
+            <span className="text-gold-gradient">
+              {clientsData.heading.highlight}
+            </span>
           </h2>
 
           {/* Tab switcher */}
-          <div style={{
-            display: "inline-flex", gap: "4px", marginTop: "32px",
-            padding: "4px", border: "1px solid rgba(201,168,76,0.2)",
-            background: "rgba(0,0,0,0.4)",
-            opacity: inView ? 1 : 0, transition: "all 0.8s ease 0.4s",
-          }}>
-            {[["clients","Our Clients"],["events","Success Events"]].map(([key,label]) => (
-              <button key={key} onClick={() => setActiveTab(key)} style={{
-                padding: "10px 28px",
-                fontFamily: "'Cinzel',serif", fontSize: "10px",
-                letterSpacing: "3px", textTransform: "uppercase",
-                border: "none", cursor: "pointer",
-                background: activeTab === key ? "linear-gradient(135deg,#C9A84C,#F5D98B)" : "transparent",
-                color: activeTab === key ? "#000" : "rgba(255,255,255,0.4)",
-                fontWeight: activeTab === key ? 700 : 400,
-                transition: "all 0.3s ease",
-              }}>{label}</button>
+          <div className={`inline-flex gap-2 sm:gap-4 mt-8 sm:mt-12 p-1.5 sm:p-2 rounded-full glass-card border-secondary/10 shadow-2xl transition-all duration-700 ease-out delay-300 ${inView ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
+            {clientsData.tabs.map((tab) => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={`px-4 sm:px-10 py-3 sm:py-4 rounded-full text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[4px] uppercase font-black transition-all duration-500 ${
+                  activeTab === tab.id 
+                    ? "bg-secondary text-primary shadow-xl scale-105" 
+                    : "bg-transparent text-secondary/40 hover:text-secondary"
+                }`}>
+                {tab.label}
+              </button>
             ))}
           </div>
         </div>
 
         {/* ── CLIENTS TAB ── */}
         {activeTab === "clients" && (
-          <div>
-            {/* Marquee row 1 — left to right */}
-            <div style={{ overflow: "hidden", marginBottom: "20px", position: "relative" }}
-              onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-              <div style={{ display: "flex", gap: "16px", animation: `marqueeLeft 30s linear infinite ${paused ? "paused" : "running"}`, width: "max-content" }}>
-                {marqueeItems.map((c, i) => (
-                  <ClientCard key={i} client={c} />
-                ))}
+          <div className="animate-[fadeIn_0.5s_ease-out]">
+            {/* Marquee Row 1 */}
+            <div className="overflow-hidden mb-6 sm:mb-8 relative py-4 sm:py-6" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+              <div className="flex gap-4 sm:gap-8 w-max" style={{ animation: `marqueeLeft 50s linear infinite ${paused ? "paused" : "running"}` }}>
+                {marqueeItems.map((c, i) => <ClientCard key={i} client={c} />)}
               </div>
-              {/* Edge fades */}
-              <div style={{ position: "absolute", top: 0, left: 0, width: "80px", height: "100%",
-                background: "linear-gradient(to right, #030303, transparent)", pointerEvents: "none", zIndex: 2 }} />
-              <div style={{ position: "absolute", top: 0, right: 0, width: "80px", height: "100%",
-                background: "linear-gradient(to left, #030303, transparent)", pointerEvents: "none", zIndex: 2 }} />
+              <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-primary via-primary/80 to-transparent pointer-events-none z-10" />
+              <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-primary via-primary/80 to-transparent pointer-events-none z-10" />
             </div>
 
-            {/* Marquee row 2 — right to left */}
-            <div style={{ overflow: "hidden", position: "relative" }}
-              onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-              <div style={{ display: "flex", gap: "16px", animation: `marqueeRight 35s linear infinite ${paused ? "paused" : "running"}`, width: "max-content" }}>
-                {[...marqueeItems].reverse().map((c, i) => (
-                  <ClientCard key={i} client={c} />
-                ))}
+            {/* Marquee Row 2 */}
+            <div className="overflow-hidden relative py-4 sm:py-6" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+              <div className="flex gap-4 sm:gap-8 w-max" style={{ animation: `marqueeRight 55s linear infinite ${paused ? "paused" : "running"}` }}>
+                {[...marqueeItems].reverse().map((c, i) => <ClientCard key={i} client={c} />)}
               </div>
-              <div style={{ position: "absolute", top: 0, left: 0, width: "80px", height: "100%",
-                background: "linear-gradient(to right, #030303, transparent)", pointerEvents: "none", zIndex: 2 }} />
-              <div style={{ position: "absolute", top: 0, right: 0, width: "80px", height: "100%",
-                background: "linear-gradient(to left, #030303, transparent)", pointerEvents: "none", zIndex: 2 }} />
+              <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-primary via-primary/80 to-transparent pointer-events-none z-10" />
+              <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-primary via-primary/80 to-transparent pointer-events-none z-10" />
             </div>
 
             {/* Tagline */}
-            <p style={{
-              textAlign: "center", marginTop: "48px",
-              fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
-              fontSize: "clamp(14px,1.4vw,17px)", color: "rgba(255,255,255,0.3)",
-              opacity: inView ? 1 : 0, transition: "opacity 1s ease 0.8s",
-            }}>Trusted by 300+ organisations across Tamil Nadu & beyond</p>
+            <p className={`text-center mt-12 sm:mt-20 font-['Cormorant_Garamond'] italic text-xl sm:text-2xl text-white/40 transition-opacity duration-1000 ease-out delay-500 ${inView ? "opacity-100" : "opacity-0"}`}>
+              "{clientsData.tagline}"
+            </p>
           </div>
         )}
 
         {/* ── SUCCESS EVENTS TAB ── */}
         {activeTab === "events" && (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-            gap: "20px",
-          }}>
-            {SUCCESS_EVENTS.map((ev, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10 animate-[fadeIn_0.5s_ease-out]">
+            {clientsData.events.map((ev, i) => (
               <EventCard key={i} ev={ev} i={i} inView={inView} />
             ))}
           </div>
@@ -180,60 +134,36 @@ export default function ClientsSection() {
       <style>{`
         @keyframes marqueeLeft  { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         @keyframes marqueeRight { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-        @keyframes shimmer      { 0%{background-position:-200% center} 100%{background-position:200% center} }
-        @keyframes cardGlow     { 0%,100%{box-shadow:0 0 0 rgba(201,168,76,0)} 50%{box-shadow:0 0 30px rgba(201,168,76,0.15)} }
+        @keyframes fadeIn       { 0%{opacity:0; transform:translateY(20px)} 100%{opacity:1; transform:translateY(0)} }
       `}</style>
     </section>
   );
 }
 
+// Subcomponents
 function ClientCard({ client }) {
   const [hov, setHov] = useState(false);
   return (
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      style={{
-        minWidth: "180px", padding: "20px 28px",
-        border: hov ? "1px solid rgba(201,168,76,0.5)" : "1px solid rgba(255,255,255,0.07)",
-        background: hov ? "rgba(201,168,76,0.06)" : "rgba(255,255,255,0.02)",
-        display: "flex", flexDirection: "column", alignItems: "center", gap: "8px",
-        cursor: "default", flexShrink: 0,
-        transition: "all 0.35s ease",
-        transform: hov ? "translateY(-4px)" : "translateY(0)",
-        boxShadow: hov ? "0 12px 40px rgba(201,168,76,0.15)" : "none",
-        position: "relative",
-      }}
+      className={`min-w-[180px] sm:min-w-[240px] p-6 sm:p-8 glass-card border-secondary/10 flex flex-col items-center gap-2 sm:gap-3 cursor-default shrink-0 transition-all duration-500 ease-out ${
+        hov 
+          ? "bg-secondary/10 border-secondary -translate-y-2 shadow-2xl scale-105" 
+          : "bg-primary-light/40 translate-y-0 scale-100"
+      }`}
     >
-      {/* Corner accent */}
-      <div style={{ position: "absolute", top: 0, left: 0, width: "14px", height: "14px",
-        borderTop: `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}`,
-        borderLeft: `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}`,
-        transition: "all 0.3s ease" }} />
-      <div style={{ position: "absolute", bottom: 0, right: 0, width: "14px", height: "14px",
-        borderBottom: `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}`,
-        borderRight: `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}`,
-        transition: "all 0.3s ease" }} />
-
-      {/* Logo placeholder — swap with <img src={client.logo} /> */}
-      <div style={{
-        fontSize: "28px",
-        filter: hov ? "drop-shadow(0 0 8px rgba(201,168,76,0.5))" : "none",
-        transition: "filter 0.3s ease",
-      }}>{client.emoji}</div>
-
-      <div style={{
-        fontFamily: "'Cinzel',serif", fontSize: "10px",
-        letterSpacing: "1.5px", textTransform: "uppercase",
-        color: hov ? "#fff" : "rgba(255,255,255,0.6)",
-        textAlign: "center", transition: "color 0.3s ease",
-        fontWeight: hov ? 600 : 400,
-      }}>{client.name}</div>
-
-      <div style={{
-        fontFamily: "'Cormorant Garamond',serif", fontSize: "11px",
-        fontStyle: "italic", color: "rgba(201,168,76,0.5)",
-      }}>{client.cat}</div>
+      <div className={`text-4xl sm:text-5xl mb-2 sm:mb-3 transition-transform duration-500 ${hov ? "scale-125 rotate-6" : "scale-100 rotate-0"}`}>
+        {client.emoji}
+      </div>
+      <div className={`text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[3px] uppercase text-center font-black transition-colors duration-300 ${
+        hov ? "text-secondary" : "text-white/80"
+      }`}>
+        {client.name}
+      </div>
+      <div className="font-['Cormorant_Garamond'] text-xs sm:text-sm italic text-white/40 tracking-[1px] sm:tracking-[2px]">
+        {client.cat}
+      </div>
     </div>
   );
 }
@@ -244,57 +174,37 @@ function EventCard({ ev, i, inView }) {
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
+      className={`relative p-8 sm:p-10 glass-card border-secondary/10 transition-all duration-500 ease-out rounded-[2rem] ${
+        hov 
+          ? "bg-secondary/10 border-secondary shadow-2xl -translate-y-3" 
+          : "bg-primary-light/40 translate-y-0"
+      }`}
       style={{
-        padding: "32px 28px",
-        border: hov ? "1px solid rgba(201,168,76,0.5)" : "1px solid rgba(255,255,255,0.07)",
-        background: hov ? "rgba(201,168,76,0.05)" : "rgba(255,255,255,0.02)",
-        position: "relative",
         opacity: inView ? 1 : 0,
-        transform: inView ? (hov ? "translateY(-6px)" : "translateY(0)") : "translateY(24px)",
-        transition: `all 0.5s cubic-bezier(0.22,1,0.36,1) ${i * 0.08}s`,
-        boxShadow: hov ? "0 16px 48px rgba(201,168,76,0.12)" : "none",
-        cursor: "default",
+        transform: inView ? (hov ? "translateY(-12px)" : "translateY(0)") : "translateY(40px)",
+        transitionDelay: `${hov ? 0 : i * 0.1}s`
       }}
     >
       {/* Tag badge */}
-      <div style={{
-        position: "absolute", top: "16px", right: "16px",
-        padding: "4px 10px",
-        background: "rgba(201,168,76,0.12)",
-        border: "1px solid rgba(201,168,76,0.2)",
-        fontFamily: "'Cinzel',serif", fontSize: "8px",
-        letterSpacing: "2px", color: "#C9A84C",
-        textTransform: "uppercase",
-      }}>{ev.tag}</div>
+      <div className="absolute top-6 right-6 sm:top-8 sm:right-8 px-4 py-1.5 sm:px-5 sm:py-2 glass-card border-secondary/20 rounded-full text-[8px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary uppercase font-black shadow-lg">
+        {ev.tag}
+      </div>
 
-      <div style={{ fontSize: "36px", marginBottom: "14px", filter: hov ? "drop-shadow(0 0 12px rgba(201,168,76,0.6))" : "none", transition: "filter 0.3s ease" }}>
+      <div className={`text-5xl sm:text-6xl mb-6 sm:mb-8 transition-transform duration-500 ${hov ? "scale-110 drop-shadow-2xl animate-float" : "scale-100"}`}>
         {ev.icon}
       </div>
-      <div style={{
-        fontFamily: "'Cinzel',serif", fontSize: "13px", fontWeight: 700,
-        color: "#fff", letterSpacing: "1px", marginBottom: "8px",
-      }}>{ev.title}</div>
-      <div style={{
-        fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
-        fontSize: "13px", color: "rgba(255,255,255,0.4)", marginBottom: "4px",
-      }}>📍 {ev.loc}</div>
-      <div style={{
-        fontFamily: "'Cinzel',serif", fontSize: "10px",
-        letterSpacing: "2px", color: "rgba(201,168,76,0.5)",
-      }}>{ev.year}</div>
-
-      {/* Corner accents */}
-      {[["top","left"],["bottom","right"]].map(([v,h]) => (
-        <div key={`${v}${h}`} style={{
-          position: "absolute", [v]: 0, [h]: 0,
-          width: "18px", height: "18px",
-          borderTop: v === "top" ? `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}` : "none",
-          borderBottom: v === "bottom" ? `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}` : "none",
-          borderLeft: h === "left" ? `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}` : "none",
-          borderRight: h === "right" ? `1px solid ${hov ? "#C9A84C" : "rgba(201,168,76,0.3)"}` : "none",
-          transition: "all 0.3s ease",
-        }} />
-      ))}
+      <div className="text-xl sm:text-2xl font-black text-white tracking-[1px] sm:tracking-[2px] mb-2 sm:mb-3 uppercase">
+        {ev.title}
+      </div>
+      <div className="font-['Cormorant_Garamond'] italic text-lg sm:text-xl text-white/60 mb-4 sm:mb-6 flex items-center gap-2">
+        <span className="text-secondary text-xl sm:text-2xl animate-pulse">📍</span> {ev.loc}
+      </div>
+      
+      <div className="w-full h-[1px] bg-secondary/10 mb-4 sm:mb-6" />
+      
+      <div className="text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[4px] text-secondary font-black bg-primary/50 inline-block px-4 py-1.5 sm:px-6 sm:py-2 rounded-full border border-secondary/10">
+        {ev.year}
+      </div>
     </div>
   );
 }

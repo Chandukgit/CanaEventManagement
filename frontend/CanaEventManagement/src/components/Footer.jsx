@@ -1,101 +1,91 @@
-import { useState, useEffect, useRef } from "react";
+// 1. Imports
+import React, { useState, useEffect, useRef } from "react";
+import { companyData } from "../data/companyData";
 
-// 🖼️ Replace with your actual gallery images from src/assets/images/gallery/
-// import g1 from '../assets/images/gallery/g1.jpg'  ...etc
-// Then in GALLERY_IMAGES: replace gradient with:  image: g1
+// 2. Dynamic Variables
+const footerData = {
+  gallery: {
+    titleSpan1: "Moments We've ",
+    titleSpan2: "Perfected",
+    subtitle: "Our Portfolio",
+    instagramLink: companyData.socials.find(s => s.name === 'Instagram')?.url || "#",
+    instagramLabel: "View Full Portfolio",
+    images: [
+      { gradient: "linear-gradient(135deg, #00211F, #C9A84C)", label: "Luxury Wedding" },
+      { gradient: "linear-gradient(135deg, #003D39, #10B981)", label: "Corporate Gala" },
+      { gradient: "linear-gradient(135deg, #00211F, #D4BC7B)", label: "Grand Opening" },
+      { gradient: "linear-gradient(135deg, #003D39, #C9A84C)", label: "Elite Birthday" },
+      { gradient: "linear-gradient(135deg, #00211F, #10B981)", label: "Award Night" },
+      { gradient: "linear-gradient(135deg, #003D39, #D4BC7B)", label: "Fashion Show" },
+      { gradient: "linear-gradient(135deg, #00211F, #C9A84C)", label: "Product Launch" },
+      { gradient: "linear-gradient(135deg, #003D39, #10B981)", label: "Cultural Fest" }
+    ]
+  },
+  companyBanner: {
+    label: "A Unit Of",
+    name: companyData.parentCompany,
+    icon: "✨"
+  },
+  footerText: {
+    brand: companyData.logoText,
+    tagline: companyData.logoSubtext,
+    description: "Crafting extraordinary events with passion, precision and unmatched creativity since 2019.",
+    copyright: `© ${new Date().getFullYear()} ${companyData.logoText} Event Management. All rights reserved.`,
+    credit: "Crafted by Cana Dev Team"
+  },
+  socialLinks: companyData.socials,
+  navLinks: ["Home", "About Us", "Services", "Founder", "Enquiry", "Contact Us"],
+  services: ["Wedding Planning", "Corporate Events", "College Fests", "Birthday Events", "Photo Shoots", "Cultural Events"],
+  contactInfo: [
+    { icon: "📍", text: companyData.address },
+    { icon: "📞", text: companyData.phone, href: companyData.phoneLink },
+    { icon: "✉️", text: companyData.email, href: companyData.emailLink }
+  ]
+};
 
-const GALLERY_IMAGES = [
-  { gradient: "linear-gradient(135deg,#1a0a00,#3d1500)", label: "Corporate Night" },
-  { gradient: "linear-gradient(135deg,#001a1a,#003d3d)", label: "College Fest" },
-  { gradient: "linear-gradient(135deg,#1a001a,#3d003d)", label: "Wedding Ceremony" },
-  { gradient: "linear-gradient(135deg,#0a1a00,#1e3d00)", label: "Birthday Bash" },
-  { gradient: "linear-gradient(135deg,#00001a,#00003d)", label: "Award Night" },
-  { gradient: "linear-gradient(135deg,#1a0a0a,#3d1a1a)", label: "Product Launch" },
-  { gradient: "linear-gradient(135deg,#0a0a1a,#1a1a3d)", label: "Photo Shoot" },
-  { gradient: "linear-gradient(135deg,#1a1a00,#3d3d00)", label: "Cultural Event" },
-];
-
-const NAV_LINKS = ["Home","About Us","Services","Gallery","Enquiry","Contact Us"];
-const SERVICES  = ["Wedding Planning","Corporate Events","College Fests","Birthday Events","Photo Shoots","Cultural Events"];
-
+// 3. Component
 export default function Footer() {
-  const [activeImg, setActiveImg] = useState(2); // center card active
-  const [scrollY, setScrollY]     = useState(0);
+  const [activeImg, setActiveImg] = useState(2);
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Auto-rotate gallery active card every 4s
-  useEffect(() => {
     const t = setInterval(() => {
-      setActiveImg(p => (p + 1) % GALLERY_IMAGES.length);
+      setActiveImg(p => (p + 1) % footerData.gallery.images.length);
     }, 4000);
     return () => clearInterval(t);
   }, []);
 
   return (
-    <>
+    <div className="bg-primary pt-20 md:pt-24 overflow-hidden relative">
       {/* ── INSTAGRAM GALLERY SECTION ──────────────────────────── */}
-      <section ref={sectionRef} style={{ background: "#030303", paddingTop: "100px", overflow: "hidden", position: "relative" }}>
+      <section ref={sectionRef} className="relative z-10">
 
-        {/* Subtle top gradient */}
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "120px",
-          background: "linear-gradient(to bottom, #030303, transparent)", zIndex: 2, pointerEvents: "none" }} />
-
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "48px", position: "relative", zIndex: 2 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px", marginBottom: "16px" }}>
-            <span style={{ width: "40px", height: "1px", background: "linear-gradient(to right, transparent, #C9A84C)" }} />
-            <span style={{ fontFamily: "'Cinzel',serif", fontSize: "10px", letterSpacing: "6px", color: "#C9A84C", textTransform: "uppercase" }}>
-              📷 Our Portfolio
+        <div className="text-center mb-12 sm:mb-16 relative z-10 px-4">
+          <div className="flex items-center justify-center gap-4 md:gap-6 mb-6">
+            <span className="w-12 md:w-16 h-[1px] bg-secondary/50" />
+            <span className="text-[10px] sm:text-[12px] tracking-[6px] sm:tracking-[8px] text-secondary uppercase font-bold">
+              {footerData.gallery.subtitle}
             </span>
-            <span style={{ width: "40px", height: "1px", background: "linear-gradient(to left, transparent, #C9A84C)" }} />
+            <span className="w-12 md:w-16 h-[1px] bg-secondary/50" />
           </div>
-          <h2 style={{
-            fontFamily: "'Cinzel',serif", fontWeight: 900,
-            fontSize: "clamp(26px,4vw,54px)", color: "#fff", lineHeight: 1.1,
-          }}>
-            Moments We've{" "}
-            <span style={{
-              background: "linear-gradient(90deg,#C9A84C,#F5D98B,#C9A84C)", backgroundSize: "200%",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              animation: "shimmer 3s linear infinite",
-            }}>Crafted</span>
+          <h2 className="font-black text-3xl sm:text-4xl md:text-6xl text-white leading-tight uppercase mb-8 sm:mb-10">
+            {footerData.gallery.titleSpan1}{" "}
+            <span className="text-gold-gradient">
+              {footerData.gallery.titleSpan2}
+            </span>
           </h2>
-          <a href="https://instagram.com" target="_blank" rel="noreferrer" style={{
-            display: "inline-flex", alignItems: "center", gap: "10px",
-            marginTop: "20px",
-            padding: "12px 28px",
-            background: "linear-gradient(135deg,#C9A84C,#F5D98B)",
-            fontFamily: "'Cinzel',serif", fontSize: "10px",
-            letterSpacing: "3px", textTransform: "uppercase",
-            fontWeight: 700, color: "#000", textDecoration: "none",
-            clipPath: "polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%)",
-            transition: "all 0.3s ease",
-          }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(201,168,76,0.4)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
-          >
-            📷 Follow Us On Instagram
+          <a href={footerData.gallery.instagramLink} target="_blank" rel="noreferrer" className="btn-premium inline-block text-xs sm:text-sm">
+            {footerData.gallery.instagramLabel}
           </a>
         </div>
 
-        {/* Rotating gallery cards - cinema-strip layout */}
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "center",
-          gap: "12px", padding: "0 0 60px 0",
-          position: "relative", zIndex: 1,
-          overflowX: "hidden",
-        }}>
-          {GALLERY_IMAGES.map((img, i) => {
+        {/* Rotating gallery cards */}
+        <div className="flex items-center justify-center gap-4 sm:gap-6 pb-12 sm:pb-16 relative z-0 overflow-hidden px-4">
+          {footerData.gallery.images.map((img, i) => {
             const isCenter  = i === activeImg;
-            const isAdjacent = Math.abs(i - activeImg) === 1 || (activeImg === 0 && i === GALLERY_IMAGES.length - 1) || (activeImg === GALLERY_IMAGES.length - 1 && i === 0);
-            const scale = isCenter ? 1.18 : isAdjacent ? 0.92 : 0.78;
-            const opacity = isCenter ? 1 : isAdjacent ? 0.65 : 0.35;
+            const isAdjacent = Math.abs(i - activeImg) === 1 || (activeImg === 0 && i === footerData.gallery.images.length - 1) || (activeImg === footerData.gallery.images.length - 1 && i === 0);
+            const scale = isCenter ? 1.1 : isAdjacent ? 0.9 : 0.75;
+            const opacity = isCenter ? 1 : isAdjacent ? 0.6 : 0.25;
             const zIndex = isCenter ? 10 : isAdjacent ? 5 : 1;
 
             return (
@@ -103,198 +93,122 @@ export default function Footer() {
                 key={i}
                 onClick={() => setActiveImg(i)}
                 style={{
-                  flexShrink: 0,
-                  width: isCenter ? "280px" : "200px",
-                  height: isCenter ? "340px" : "260px",
+                  width: isCenter ? "min(320px, 70vw)" : "min(240px, 50vw)",
+                  height: isCenter ? "min(400px, 90vw)" : "min(300px, 65vw)",
                   background: img.gradient,
-                  /* swap: backgroundImage: `url(${img.image})`, backgroundSize:"cover", backgroundPosition:"center" */
-                  border: isCenter ? "2px solid rgba(201,168,76,0.7)" : "1px solid rgba(255,255,255,0.08)",
-                  cursor: "pointer",
                   transform: `scale(${scale})`,
                   opacity,
                   zIndex,
-                  transition: "all 0.6s cubic-bezier(0.22,1,0.36,1)",
-                  boxShadow: isCenter ? "0 20px 60px rgba(201,168,76,0.3), 0 0 0 1px rgba(201,168,76,0.3)" : "none",
-                  position: "relative",
-                  display: "flex", alignItems: "flex-end",
                 }}
+                className={`flex-shrink-0 cursor-pointer rounded-2xl relative flex items-end transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] border ${
+                  isCenter ? "border-secondary shadow-2xl" : "border-secondary/20"
+                }`}
               >
-                {/* Image placeholder */}
-                <div style={{
-                  position: "absolute", inset: 0,
-                  display: "flex", flexDirection: "column",
-                  alignItems: "center", justifyContent: "center",
-                  gap: "8px",
-                }}>
-                  <div style={{ fontSize: isCenter ? "36px" : "24px" }}>🎪</div>
-                  <div style={{
-                    fontFamily: "'Cinzel',serif", fontSize: "8px",
-                    letterSpacing: "2px", color: "rgba(201,168,76,0.6)",
-                    textTransform: "uppercase",
-                  }}>{img.label}</div>
-                  {isCenter && <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "11px", color: "rgba(255,255,255,0.3)", fontStyle: "italic" }}>← Add your photo</div>}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 sm:gap-4 p-4 text-center">
+                  <div className="text-2xl sm:text-4xl text-secondary/50">✨</div>
+                  <div className="text-[8px] sm:text-[10px] tracking-[2px] sm:tracking-[4px] text-white/50 uppercase font-bold">{img.label}</div>
                 </div>
 
-                {/* Gradient overlay on bottom */}
-                <div style={{
-                  position: "absolute", bottom: 0, left: 0, right: 0, height: "60%",
-                  background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%)",
-                }} />
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-transparent to-transparent rounded-2xl" />
 
                 {/* Label */}
-                <div style={{
-                  position: "relative", zIndex: 1,
-                  padding: "12px 14px",
-                  fontFamily: "'Cinzel',serif", fontSize: "9px",
-                  letterSpacing: "2px", color: isCenter ? "#C9A84C" : "rgba(255,255,255,0.4)",
-                  textTransform: "uppercase", transition: "color 0.4s ease",
-                  width: "100%",
-                }}>{img.label}</div>
-
-                {/* Active indicator dot */}
-                {isCenter && (
-                  <div style={{
-                    position: "absolute", top: "12px", right: "12px",
-                    width: "10px", height: "10px", borderRadius: "50%",
-                    background: "#C9A84C",
-                    boxShadow: "0 0 12px #C9A84C",
-                    animation: "pulseGlow 1.5s ease infinite",
-                  }} />
-                )}
+                <div className="relative z-10 w-full text-center py-4 sm:py-6 text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[3px] font-black text-white uppercase">
+                  {img.label}
+                </div>
               </div>
             );
           })}
         </div>
 
         {/* Progress dots */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "8px", paddingBottom: "80px" }}>
-          {GALLERY_IMAGES.map((_, i) => (
-            <button key={i} onClick={() => setActiveImg(i)} style={{
-              width: i === activeImg ? "24px" : "8px", height: "8px",
-              borderRadius: "4px", border: "none", cursor: "pointer",
-              background: i === activeImg ? "linear-gradient(90deg,#C9A84C,#F5D98B)" : "rgba(255,255,255,0.15)",
-              transition: "all 0.4s ease",
-            }} />
+        <div className="flex justify-center gap-2 sm:gap-3 pb-16 sm:pb-24">
+          {footerData.gallery.images.map((_, i) => (
+            <button key={i} onClick={() => setActiveImg(i)} 
+              className={`h-1.5 rounded-full transition-all duration-500 ease-out ${
+                i === activeImg ? "w-8 sm:w-10 bg-secondary" : "w-2.5 sm:w-3 bg-secondary/20"
+              }`} 
+              aria-label={`Go to image slide ${i + 1}`}
+            />
           ))}
         </div>
 
         {/* Parent company banner */}
-        <div style={{
-          borderTop: "1px solid rgba(201,168,76,0.1)",
-          borderBottom: "1px solid rgba(201,168,76,0.1)",
-          padding: "28px 24px",
-          display: "flex", alignItems: "center", justifyContent: "center", gap: "24px",
-          background: "rgba(201,168,76,0.02)",
-        }}>
-          <div style={{
-            width: "64px", height: "64px", borderRadius: "50%",
-            border: "1px solid rgba(201,168,76,0.4)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "24px",
-            background: "rgba(201,168,76,0.05)",
-          }}>🌟</div>
-          <div style={{ borderLeft: "1px solid rgba(201,168,76,0.3)", paddingLeft: "24px" }}>
-            <div style={{ fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: "13px", color: "rgba(255,255,255,0.4)", letterSpacing: "2px" }}>A Unit Of</div>
-            <div style={{
-              fontFamily: "'Cinzel',serif", fontWeight: 900,
-              fontSize: "clamp(16px,2.5vw,28px)",
-              background: "linear-gradient(90deg,#C9A84C,#F5D98B,#C9A84C)", backgroundSize: "200%",
-              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-              animation: "shimmer 3s linear infinite",
-              letterSpacing: "2px",
-            }}>CANA GROUP OF COMPANIES</div>
+        <div className="border-y border-secondary/20 py-8 sm:py-12 px-6 flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 bg-primary-light/30">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full glass-card flex items-center justify-center text-2xl sm:text-3xl border-secondary/30 animate-float">
+            {footerData.companyBanner.icon}
+          </div>
+          <div className="text-center md:text-left md:border-l md:border-secondary/20 md:pl-8">
+            <div className="font-['Cormorant_Garamond'] italic text-base sm:text-lg text-secondary/70 tracking-[2px] sm:tracking-[4px]">
+              {footerData.companyBanner.label}
+            </div>
+            <div className="text-xl sm:text-2xl md:text-4xl font-black text-white tracking-[2px] sm:tracking-[4px] uppercase mt-1">
+              {footerData.companyBanner.name}
+            </div>
           </div>
         </div>
       </section>
 
       {/* ── FOOTER ──────────────────────────────────────────────── */}
-      <footer style={{ background: "#030303", borderTop: "1px solid rgba(201,168,76,0.12)", padding: "72px 24px 0" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr 1fr 1.2fr", gap: "48px", paddingBottom: "64px" }}
-            className="footer-grid">
+      <footer className="pt-16 sm:pt-24 px-6 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.2fr] gap-12 sm:gap-16 pb-16 sm:pb-20">
 
             {/* Brand column */}
             <div>
-              <div style={{ marginBottom: "20px" }}>
-                <div style={{
-                  fontFamily: "'Cinzel',serif", fontSize: "28px", fontWeight: 900,
-                  letterSpacing: "4px",
-                  background: "linear-gradient(135deg,#C9A84C,#F5D98B,#C9A84C)",
-                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-                  display: "inline-block",
-                  border: "1px solid rgba(201,168,76,0.3)",
-                  padding: "8px 16px",
-                }}>CANA</div>
-                <div style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "4px", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", marginTop: "4px" }}>
-                  Event Management
+              <div className="mb-6 sm:mb-8">
+                <div className="text-3xl sm:text-4xl font-black tracking-[6px] sm:tracking-[8px] text-gold-gradient uppercase">
+                  {footerData.footerText.brand}
+                </div>
+                <div className="text-[9px] sm:text-[10px] tracking-[4px] sm:tracking-[6px] text-secondary uppercase mt-2 font-bold opacity-80">
+                  {footerData.footerText.tagline}
                 </div>
               </div>
-              <p style={{
-                fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
-                fontSize: "14px", color: "rgba(255,255,255,0.4)", lineHeight: 1.9, marginBottom: "28px",
-              }}>
-                Crafting extraordinary events with passion, precision and unmatched creativity since 2019.
+              <p className="font-['Cormorant_Garamond'] italic text-lg sm:text-xl text-white/60 leading-relaxed mb-6 sm:mb-10 pr-4">
+                "{footerData.footerText.description}"
               </p>
-              <div style={{ display: "flex", gap: "10px" }}>
-                {[["📸","Instagram"],["👤","Facebook"],["▶","YouTube"],["💬","WhatsApp"]].map(([icon, label]) => (
-                  <a key={label} href="#" title={label} style={{
-                    width: "38px", height: "38px", borderRadius: "50%",
-                    border: "1px solid rgba(201,168,76,0.25)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "15px", textDecoration: "none",
-                    transition: "all 0.3s ease",
-                    background: "rgba(201,168,76,0.03)",
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(201,168,76,0.15)"; e.currentTarget.style.borderColor = "#C9A84C"; e.currentTarget.style.transform = "translateY(-3px)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(201,168,76,0.03)"; e.currentTarget.style.borderColor = "rgba(201,168,76,0.25)"; e.currentTarget.style.transform = "none"; }}
-                  >{icon}</a>
+              <div className="flex gap-4">
+                {footerData.socialLinks.map(({ icon, label, url }) => (
+                  <a key={label} href={url} title={label} target="_blank" rel="noreferrer"
+                     className="w-10 h-10 sm:w-12 sm:h-12 rounded-full glass-card flex items-center justify-center text-lg sm:text-xl text-secondary hover:bg-secondary hover:text-primary transition-all duration-300">
+                    <span>{icon}</span>
+                  </a>
                 ))}
               </div>
             </div>
 
             {/* Navigation */}
             <div>
-              <h4 style={{ fontFamily: "'Cinzel',serif", fontSize: "11px", letterSpacing: "4px", color: "#C9A84C", textTransform: "uppercase", marginBottom: "24px", paddingBottom: "12px", borderBottom: "1px solid rgba(201,168,76,0.15)" }}>
-                Navigation
+              <h4 className="text-[12px] sm:text-[14px] tracking-[3px] sm:tracking-[4px] text-secondary font-bold uppercase mb-6 sm:mb-8 pb-3 sm:pb-4 border-b border-secondary/20">
+                Explore
               </h4>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-                {NAV_LINKS.map(link => (
-                  <li key={link}>
-                    <a href={`#${link.toLowerCase().replace(" ","-")}`} style={{
-                      fontFamily: "'Cormorant Garamond',serif", fontSize: "15px",
-                      color: "rgba(255,255,255,0.45)", textDecoration: "none",
-                      display: "flex", alignItems: "center", gap: "8px",
-                      transition: "all 0.3s ease",
-                    }}
-                      onMouseEnter={e => { e.currentTarget.style.color = "#C9A84C"; e.currentTarget.style.paddingLeft = "6px"; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.45)"; e.currentTarget.style.paddingLeft = "0"; }}
-                    >
-                      <span style={{ width: "12px", height: "1px", background: "rgba(201,168,76,0.4)", flexShrink: 0 }} />
-                      {link}
-                    </a>
-                  </li>
-                ))}
+              <ul className="flex flex-col gap-3 sm:gap-4">
+                {footerData.navLinks.map(link => {
+                  const href = link === "Home" ? "/" : link === "About Us" ? "/about" : link === "Services" ? "/what-we-do" : link === "Founder" ? "/founder" : link === "Enquiry" ? "/enquiry" : "/contact";
+                  return (
+                    <li key={link}>
+                      <a href={href} 
+                         className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/50 hover:text-secondary hover:pl-2 transition-all duration-300 flex items-center gap-2 sm:gap-3 group">
+                        <span className="w-3 sm:w-4 h-[1px] bg-secondary/30 group-hover:bg-secondary transition-colors" />
+                        {link}
+                      </a>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
 
             {/* Services */}
             <div>
-              <h4 style={{ fontFamily: "'Cinzel',serif", fontSize: "11px", letterSpacing: "4px", color: "#C9A84C", textTransform: "uppercase", marginBottom: "24px", paddingBottom: "12px", borderBottom: "1px solid rgba(201,168,76,0.15)" }}>
-                Our Services
+              <h4 className="text-[12px] sm:text-[14px] tracking-[3px] sm:tracking-[4px] text-secondary font-bold uppercase mb-6 sm:mb-8 pb-3 sm:pb-4 border-b border-secondary/20">
+                Expertise
               </h4>
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
-                {SERVICES.map(svc => (
+              <ul className="flex flex-col gap-3 sm:gap-4">
+                {footerData.services.map(svc => (
                   <li key={svc}>
-                    <a href="#services" style={{
-                      fontFamily: "'Cormorant Garamond',serif", fontSize: "15px",
-                      color: "rgba(255,255,255,0.45)", textDecoration: "none",
-                      display: "flex", alignItems: "center", gap: "8px",
-                      transition: "all 0.3s ease",
-                    }}
-                      onMouseEnter={e => { e.currentTarget.style.color = "#C9A84C"; e.currentTarget.style.paddingLeft = "6px"; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = "rgba(255,255,255,0.45)"; e.currentTarget.style.paddingLeft = "0"; }}
-                    >
-                      <span style={{ width: "12px", height: "1px", background: "rgba(201,168,76,0.4)", flexShrink: 0 }} />
+                    <a href="/what-we-do" 
+                       className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/50 hover:text-secondary hover:pl-2 transition-all duration-300 flex items-center gap-2 sm:gap-3 group">
+                      <span className="w-3 sm:w-4 h-[1px] bg-secondary/30 group-hover:bg-secondary transition-colors" />
                       {svc}
                     </a>
                   </li>
@@ -304,25 +218,24 @@ export default function Footer() {
 
             {/* Contact info */}
             <div>
-              <h4 style={{ fontFamily: "'Cinzel',serif", fontSize: "11px", letterSpacing: "4px", color: "#C9A84C", textTransform: "uppercase", marginBottom: "24px", paddingBottom: "12px", borderBottom: "1px solid rgba(201,168,76,0.15)" }}>
-                Contact Info
+              <h4 className="text-[12px] sm:text-[14px] tracking-[3px] sm:tracking-[4px] text-secondary font-bold uppercase mb-6 sm:mb-8 pb-3 sm:pb-4 border-b border-secondary/20">
+                Get In Touch
               </h4>
-              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                {[
-                  { icon: "📍", text: "No. 7A, Sundaramoorthy Street, Jafferkhanpet, Chennai – 600 083" },
-                  { icon: "📞", text: "+91 98765 43210", href: "tel:+919876543210" },
-                  { icon: "✉️", text: "hello@canaeventmanagement.in", href: "mailto:hello@canaeventmanagement.in" },
-                ].map(({ icon, text, href }) => (
-                  <div key={text} style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-                    <span style={{ fontSize: "15px", flexShrink: 0, marginTop: "2px" }}>{icon}</span>
-                    {href ? (
-                      <a href={href} style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", textDecoration: "none", lineHeight: 1.6, transition: "color 0.3s" }}
-                        onMouseEnter={e => e.currentTarget.style.color = "#C9A84C"}
-                        onMouseLeave={e => e.currentTarget.style.color = "rgba(255,255,255,0.45)"}
-                      >{text}</a>
-                    ) : (
-                      <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "14px", color: "rgba(255,255,255,0.45)", lineHeight: 1.6 }}>{text}</span>
-                    )}
+              <div className="flex flex-col gap-6 sm:gap-8">
+                {footerData.contactInfo.map(({ icon, text, href }) => (
+                  <div key={text} className="flex gap-3 sm:gap-4 items-start group">
+                    <span className="text-lg sm:text-xl mt-1 text-secondary animate-float shrink-0">{icon}</span>
+                    <div className="min-w-0">
+                      {href ? (
+                        <a href={href} className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/60 hover:text-secondary transition-colors leading-relaxed break-all">
+                          {text}
+                        </a>
+                      ) : (
+                        <span className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/60 leading-relaxed block">
+                          {text}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -332,32 +245,17 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div style={{
-          borderTop: "1px solid rgba(201,168,76,0.08)",
-          padding: "20px 24px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          flexWrap: "wrap", gap: "12px",
-          maxWidth: "1200px", margin: "0 auto",
-        }}>
-          <span style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: "13px", color: "rgba(255,255,255,0.25)", fontStyle: "italic" }}>
-            © 2025 Cana Event Management. All rights reserved.
-          </span>
-          <span style={{ fontFamily: "'Cinzel',serif", fontSize: "9px", letterSpacing: "3px", color: "rgba(201,168,76,0.35)", textTransform: "uppercase" }}>
-            Crafted with ✦ by Cana Dev Team
-          </span>
+        <div className="border-t border-secondary/10 py-8 sm:py-10 px-6">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+            <span className="font-['Cormorant_Garamond'] text-base sm:text-lg italic text-white/40 text-center sm:text-left">
+              {footerData.footerText.copyright}
+            </span>
+            <span className="text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[4px] text-secondary font-black uppercase glass-card px-4 py-1.5 sm:px-6 sm:py-2 rounded-full border-secondary/20">
+              {footerData.footerText.credit}
+            </span>
+          </div>
         </div>
       </footer>
-
-      <style>{`
-        @keyframes shimmer   { 0%{background-position:-200% center} 100%{background-position:200% center} }
-        @keyframes pulseGlow { 0%,100%{opacity:0.6;transform:scale(1)} 50%{opacity:1;transform:scale(1.2)} }
-        @media(max-width:768px){
-          .footer-grid{ grid-template-columns: 1fr 1fr !important; }
-        }
-        @media(max-width:480px){
-          .footer-grid{ grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-    </>
+    </div>
   );
 }
