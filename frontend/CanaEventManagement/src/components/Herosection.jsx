@@ -147,7 +147,7 @@ export default function HeroSection() {
         <div className="p-4 sm:p-8 relative w-full border-none">
           
           {/* Enhanced text container for 100% legibility */}
-          <div className="bg-black/60 backdrop-blur-md rounded-3xl p-6 sm:p-12 max-w-4xl mx-auto border border-white/10 shadow-2xl">
+          <div className="p-6 sm:p-12 max-w-4xl mx-auto">
             
             <div className="mb-4 sm:mb-6 flex items-center justify-center gap-3 sm:gap-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
               <span className="block w-10 sm:w-16 h-[1px] bg-secondary/50" />
@@ -199,21 +199,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Slide Indicators */}
-      <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 sm:gap-4 glass-card px-6 py-3 sm:px-8 sm:py-4 rounded-full border-secondary/20">
-        <div className="w-40 sm:w-64 h-0.5 bg-white/10 overflow-hidden rounded-full">
-          <div className="h-full bg-secondary transition-none" style={{ width: `${slideProgress}%` }} />
-        </div>
-        <div className="flex gap-3 sm:gap-4">
-          {heroData.slides.map((_, i) => (
-            <button key={i} onClick={() => goToSlide(i)}
-              className="transition-all duration-500 rounded-full h-1"
-              style={{ width: i === slideIndex ? "32px" : "8px", background: i === slideIndex ? "var(--secondary)" : "rgba(201, 168, 76, 0.2)" }} 
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
-        </div>
-      </div>
     </section>
   );
 }

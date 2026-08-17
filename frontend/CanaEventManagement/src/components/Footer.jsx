@@ -57,23 +57,18 @@ export default function Footer() {
           </h2>
         </div>
 
-        {/* 15 Instagram Reels grid layout - Clean player-only visual with header/footer cropped */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto px-6 mb-16 relative z-10">
+        {/* Instagram Reels grid layout */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 max-w-7xl mx-auto px-4 sm:px-6 mb-16 relative z-10">
           {instagramReels.map((reel) => (
             <div 
               key={reel.id} 
-              className="relative w-full overflow-hidden rounded-[2rem] border border-secondary/15 bg-black shadow-lg"
-              style={{ paddingBottom: '177.77%', height: 0 }}
+              className="relative w-full overflow-hidden rounded-2xl sm:rounded-[2rem] border border-secondary/15 bg-black shadow-lg flex items-center justify-center aspect-[4/5]"
             >
               <iframe 
                 src={reel.embedUrl}
-                className="absolute left-0 w-full border-none"
-                style={{
-                  top: '-55px',
-                  height: 'calc(100% + 240px)',
-                }}
+                className="absolute left-1/2 top-1/2 w-full h-full border-none"
+                style={{ transform: 'translate(-50%, -52%) scale(1.7)' }}
                 scrolling="no"
-                allowFullScreen
                 allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
                 title={reel.title}
               />

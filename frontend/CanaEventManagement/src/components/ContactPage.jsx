@@ -105,12 +105,12 @@ export default function ContactPage() {
                   <h3 className="text-xl sm:text-2xl font-black text-white mb-3 sm:mb-4 tracking-[1px] sm:tracking-[2px] uppercase">{dept.title}</h3>
                   <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/40 mb-6 sm:mb-10 italic leading-relaxed">"{dept.description}"</p>
                   
-                  <div className="space-y-4 sm:space-y-6 font-['Cormorant_Garamond'] text-xl sm:text-2xl font-medium">
+                  <div className="space-y-4 sm:space-y-6 font-['Cormorant_Garamond'] text-lg sm:text-xl font-medium w-full overflow-hidden">
                     <a href={dept.phoneLink} className="flex items-center gap-3 sm:gap-4 text-white/70 hover:text-secondary transition-all duration-500 hover:translate-x-2">
-                      <Phone size={18} className="text-secondary/50" /> {dept.phone}
+                      <Phone size={18} className="text-secondary/50 shrink-0" /> <span className="truncate">{dept.phone}</span>
                     </a>
-                    <a href={dept.emailLink} className="flex items-center gap-3 sm:gap-4 text-white/70 hover:text-secondary transition-all duration-500 hover:translate-x-2 break-all">
-                      <Mail size={18} className="text-secondary/50" /> {dept.email}
+                    <a href={dept.emailLink} className="flex items-center gap-3 sm:gap-4 text-white/70 hover:text-secondary transition-all duration-500 hover:translate-x-2 w-full">
+                      <Mail size={18} className="text-secondary/50 shrink-0" /> <span className="truncate">{dept.email}</span>
                     </a>
                   </div>
                 </div>
@@ -159,16 +159,16 @@ export default function ContactPage() {
                   rel="noreferrer"
                   className="group flex items-center justify-between p-6 sm:p-8 glass-card rounded-2xl sm:rounded-[2rem] border-secondary/10 hover:border-secondary/40 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 bg-primary-light/20"
                 >
-                  <div className="flex items-center gap-4 sm:gap-6">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl glass-card border-secondary/20 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500">
+                  <div className="flex items-center gap-4 sm:gap-6 min-w-0">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl glass-card border-secondary/20 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-primary transition-all duration-500 shrink-0">
                       {getSocialIcon(social.name)}
                     </div>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <p className="text-[9px] sm:text-[10px] font-black text-secondary/60 uppercase tracking-[2px] sm:tracking-[4px] mb-1 sm:mb-2">{social.label}</p>
-                      <p className="font-['Cormorant_Garamond'] text-xl sm:text-2xl font-bold text-white leading-none">{social.handle}</p>
+                      <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl font-bold text-white leading-none truncate">{social.handle}</p>
                     </div>
                   </div>
-                  <Send size={20} className="text-secondary/20 group-hover:text-secondary group-hover:translate-x-2 group-hover:-translate-y-1 transition-all duration-500" />
+                  <Send size={20} className="text-secondary/20 group-hover:text-secondary group-hover:translate-x-2 group-hover:-translate-y-1 transition-all duration-500 shrink-0 ml-2" />
                 </a>
               ))}
             </div>
