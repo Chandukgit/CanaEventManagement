@@ -1,41 +1,32 @@
 // 1. Imports
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
 import { companyData } from "../data/companyData";
+import instagramReels from "../data/instagramReels";
 
 // 2. Dynamic Variables
 const footerData = {
   gallery: {
-    titleSpan1: "Moments We've ",
-    titleSpan2: "Perfected",
-    subtitle: "Our Portfolio",
+    titleSpan1: "Movements ",
+    titleSpan2: "Preferred",
+    subtitle: "Featured Work",
     instagramLink: companyData.socials.find(s => s.name === 'Instagram')?.url || "#",
-    instagramLabel: "View Full Portfolio",
-    images: [
-      { gradient: "linear-gradient(135deg, #00211F, #C9A84C)", label: "Luxury Wedding" },
-      { gradient: "linear-gradient(135deg, #003D39, #10B981)", label: "Corporate Gala" },
-      { gradient: "linear-gradient(135deg, #00211F, #D4BC7B)", label: "Grand Opening" },
-      { gradient: "linear-gradient(135deg, #003D39, #C9A84C)", label: "Elite Birthday" },
-      { gradient: "linear-gradient(135deg, #00211F, #10B981)", label: "Award Night" },
-      { gradient: "linear-gradient(135deg, #003D39, #D4BC7B)", label: "Fashion Show" },
-      { gradient: "linear-gradient(135deg, #00211F, #C9A84C)", label: "Product Launch" },
-      { gradient: "linear-gradient(135deg, #003D39, #10B981)", label: "Cultural Fest" }
-    ]
+    instagramLabel: "View on Instagram",
   },
   companyBanner: {
-    label: "A Unit Of",
+    label: "Organised By",
     name: companyData.parentCompany,
     icon: "✨"
   },
   footerText: {
     brand: companyData.logoText,
     tagline: companyData.logoSubtext,
-    description: "Crafting extraordinary events with passion, precision and unmatched creativity since 2019.",
+    description: "Crafting extraordinary events with passion, precision and unmatched creativity.",
     copyright: `© ${new Date().getFullYear()} ${companyData.logoText} Event Management. All rights reserved.`,
-    credit: "Crafted by Cana Dev Team"
+    credit: "CRAFTED BY CANA DEV TEAM UNDER CHANDU KILIVETI"
   },
   socialLinks: companyData.socials,
   navLinks: ["Home", "About Us", "Services", "Founder", "Enquiry", "Contact Us"],
-  services: ["Wedding Planning", "Corporate Events", "College Fests", "Birthday Events", "Photo Shoots", "Cultural Events"],
+  services: ["Wedding Planning", "Corporate Events", "College Fests", "Birthday Events", "Photo Shoots", "Live Streaming"],
   contactInfo: [
     { icon: "📍", text: companyData.address },
     { icon: "📞", text: companyData.phone, href: companyData.phoneLink },
@@ -45,20 +36,10 @@ const footerData = {
 
 // 3. Component
 export default function Footer() {
-  const [activeImg, setActiveImg] = useState(2);
-  const sectionRef = useRef(null);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setActiveImg(p => (p + 1) % footerData.gallery.images.length);
-    }, 4000);
-    return () => clearInterval(t);
-  }, []);
-
   return (
     <div className="bg-primary pt-20 md:pt-24 overflow-hidden relative">
       {/* ── INSTAGRAM GALLERY SECTION ──────────────────────────── */}
-      <section ref={sectionRef} className="relative z-10">
+      <section className="relative z-10">
 
         <div className="text-center mb-12 sm:mb-16 relative z-10 px-4">
           <div className="flex items-center justify-center gap-4 md:gap-6 mb-6">
@@ -74,62 +55,29 @@ export default function Footer() {
               {footerData.gallery.titleSpan2}
             </span>
           </h2>
-          <a href={footerData.gallery.instagramLink} target="_blank" rel="noreferrer" className="btn-premium inline-block text-xs sm:text-sm">
-            {footerData.gallery.instagramLabel}
-          </a>
         </div>
 
-        {/* Rotating gallery cards */}
-        <div className="flex items-center justify-center gap-4 sm:gap-6 pb-12 sm:pb-16 relative z-0 overflow-hidden px-4">
-          {footerData.gallery.images.map((img, i) => {
-            const isCenter  = i === activeImg;
-            const isAdjacent = Math.abs(i - activeImg) === 1 || (activeImg === 0 && i === footerData.gallery.images.length - 1) || (activeImg === footerData.gallery.images.length - 1 && i === 0);
-            const scale = isCenter ? 1.1 : isAdjacent ? 0.9 : 0.75;
-            const opacity = isCenter ? 1 : isAdjacent ? 0.6 : 0.25;
-            const zIndex = isCenter ? 10 : isAdjacent ? 5 : 1;
-
-            return (
-              <div
-                key={i}
-                onClick={() => setActiveImg(i)}
+        {/* 15 Instagram Reels grid layout - Clean player-only visual with header/footer cropped */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto px-6 mb-16 relative z-10">
+          {instagramReels.map((reel) => (
+            <div 
+              key={reel.id} 
+              className="relative w-full overflow-hidden rounded-[2rem] border border-secondary/15 bg-black shadow-lg"
+              style={{ paddingBottom: '177.77%', height: 0 }}
+            >
+              <iframe 
+                src={reel.embedUrl}
+                className="absolute left-0 w-full border-none"
                 style={{
-                  width: isCenter ? "min(320px, 70vw)" : "min(240px, 50vw)",
-                  height: isCenter ? "min(400px, 90vw)" : "min(300px, 65vw)",
-                  background: img.gradient,
-                  transform: `scale(${scale})`,
-                  opacity,
-                  zIndex,
+                  top: '-55px',
+                  height: 'calc(100% + 240px)',
                 }}
-                className={`flex-shrink-0 cursor-pointer rounded-2xl relative flex items-end transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] border ${
-                  isCenter ? "border-secondary shadow-2xl" : "border-secondary/20"
-                }`}
-              >
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 sm:gap-4 p-4 text-center">
-                  <div className="text-2xl sm:text-4xl text-secondary/50">✨</div>
-                  <div className="text-[8px] sm:text-[10px] tracking-[2px] sm:tracking-[4px] text-white/50 uppercase font-bold">{img.label}</div>
-                </div>
-
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-transparent to-transparent rounded-2xl" />
-
-                {/* Label */}
-                <div className="relative z-10 w-full text-center py-4 sm:py-6 text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[3px] font-black text-white uppercase">
-                  {img.label}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Progress dots */}
-        <div className="flex justify-center gap-2 sm:gap-3 pb-16 sm:pb-24">
-          {footerData.gallery.images.map((_, i) => (
-            <button key={i} onClick={() => setActiveImg(i)} 
-              className={`h-1.5 rounded-full transition-all duration-500 ease-out ${
-                i === activeImg ? "w-8 sm:w-10 bg-secondary" : "w-2.5 sm:w-3 bg-secondary/20"
-              }`} 
-              aria-label={`Go to image slide ${i + 1}`}
-            />
+                scrolling="no"
+                allowFullScreen
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                title={reel.title}
+              />
+            </div>
           ))}
         </div>
 

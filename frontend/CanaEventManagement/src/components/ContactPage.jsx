@@ -5,6 +5,10 @@ import {
 } from 'lucide-react';
 import { companyData } from "../data/companyData";
 
+// Dynamically resolve WhatsApp QR if available
+const contactGlob = import.meta.glob('/src/assets/images/contact/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', { eager: true, import: 'default' });
+const whatsappQr = Object.values(contactGlob)[0] || null; // Resolve first image in contact folder
+
 // 2. Dynamic Variables
 const contactData = {
   header: {
@@ -22,8 +26,9 @@ const contactData = {
   socialLinks: companyData.socials,
   supportWidget: {
     title: "Instant Support?",
-    desc: "Start a live chat with our project managers for immediate assistance regarding your event.",
-    button: "LIVE WHATSAPP CHAT"
+    desc: "Start a live chat with our project managers or scan the QR code for immediate assistance.",
+    button: "LIVE WHATSAPP CHAT",
+    qr: whatsappQr
   },
   signature: "THE POWER OF PRODUCTION"
 };
@@ -37,8 +42,6 @@ const getSocialIcon = (name) => {
       return <span className="text-xl">📸</span>;
     case 'facebook':
       return <span className="text-xl">👤</span>;
-    case 'youtube':
-      return <span className="text-xl">▶</span>;
     default:
       return <ExternalLink size={20} />;
   }
@@ -170,12 +173,23 @@ export default function ContactPage() {
               ))}
             </div>
 
-            {/* Support Widget */}
-            <div className="p-8 sm:p-16 glass-card border-secondary/10 rounded-[2rem] sm:rounded-[4rem] shadow-2xl text-center bg-gradient-to-b from-primary-light/40 to-transparent">
+            {/* Support Widget with QR */}
+            <div className="p-8 sm:p-12 glass-card border-secondary/10 rounded-[2rem] sm:rounded-[4rem] shadow-2xl text-center bg-gradient-to-b from-primary-light/40 to-transparent flex flex-col items-center">
               <h3 className="text-2xl sm:text-3xl font-black mb-4 sm:mb-6 tracking-[3px] sm:tracking-[4px] text-white uppercase">{contactData.supportWidget.title}</h3>
-              <p className="font-['Cormorant_Garamond'] text-lg sm:text-2xl text-white/40 mb-8 sm:mb-12 italic leading-relaxed">
+              <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/50 mb-8 italic leading-relaxed">
                 "{contactData.supportWidget.desc}"
               </p>
+              
+              {contactData.supportWidget.qr && (
+                <div className="mb-8 p-3 bg-white rounded-2xl shadow-xl w-40 h-40 flex items-center justify-center">
+                  <img 
+                    src={contactData.supportWidget.qr} 
+                    alt="WhatsApp QR Code" 
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+
               <a 
                 href={companyData.socials.find(s => s.name === 'WhatsApp')?.url} 
                 target="_blank" 

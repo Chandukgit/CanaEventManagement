@@ -2,10 +2,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { companyData } from "../data/companyData";
 
+// Load local images dynamically
+const localGlob = import.meta.glob('/src/assets/images/*/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', { eager: true, import: 'default' });
+const getAboutImage = (folder, fallbackIndex) => {
+  const matched = Object.keys(localGlob).find(path => path.toLowerCase().includes(`/${folder}/`));
+  if (matched) return localGlob[matched];
+  // Fallback to one of the hero images if they exist
+  const heroGlob = import.meta.glob('/src/assets/images/hero/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', { eager: true, import: 'default' });
+  const heroes = Object.values(heroGlob);
+  return heroes[fallbackIndex % heroes.length] || "/src/assets/images/hero_bg_1.png";
+};
+
 // 2. Dynamic Variables
 const aboutData = {
   sectionLabel: "Our Story",
-  heading: { main: "About", highlight: companyData.logoText + " Events" },
+  heading: { main: "About", highlight: "CANA EVENT MANAGEMENT" },
   paragraphs: [
     "Cana Event Management is a premier event planning and production company rooted in South India. Our innovation, creativity, and attention to detail transform every celebration into a magical experience — be it grand or intimate.",
     "With international-standard hospitality and a team that breathes creativity, we turn your most fragmented idea into a concrete, unforgettable reality. Every detail, every moment — meticulously crafted just for you."
@@ -16,12 +27,14 @@ const aboutData = {
     { icon: "🎯", title: "Execution", desc: "Flawless on-ground delivery, every time" },
     { icon: "🏆", title: "Production", desc: "World-class staging, lighting & sound" }
   ],
-  images: [
-    { gradient: "linear-gradient(135deg, #00211F, #C9A84C)", label: "Corporate Events" },
-    { gradient: "linear-gradient(135deg, #003D39, #10B981)", label: "Wedding Ceremonies" },
-    { gradient: "linear-gradient(135deg, #00211F, #D4BC7B)", label: "College Fests" },
-    { gradient: "linear-gradient(135deg, #003D39, #C9A84C)", label: "Photo Shoots" }
-  ],
+  get images() {
+    return [
+      { image: getAboutImage("corporate", 0), label: "Corporate Events" },
+      { image: getAboutImage("weddings", 1), label: "Wedding Ceremonies" },
+      { image: getAboutImage("college", 2), label: "College Fests" },
+      { image: getAboutImage("photoshoots", 3), label: "Photo Shoots" }
+    ];
+  },
   button: { label: "Discover More", href: "#contact" },
   badgeMessage: "Since 2019"
 };
@@ -99,7 +112,7 @@ export default function AboutSection() {
               {aboutData.pillars.map((p) => (
                 <div key={p.title} 
                      className="glass-card p-6 md:p-8 hover:border-secondary transition-all duration-500 hover:-translate-y-2 group rounded-2xl">
-                  <div className="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform origin-left text-secondary">{p.icon}</div>
+                   <div className="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform origin-left text-secondary">{p.icon}</div>
                   <div className="text-xs md:text-sm tracking-[2px] md:tracking-[4px] text-white uppercase font-bold mb-2 md:mb-3 group-hover:text-secondary transition-colors">
                     {p.title}
                   </div>
@@ -125,15 +138,12 @@ export default function AboutSection() {
 
             {/* Main Image Container */}
             <div className="relative z-10 aspect-[4/3] rounded-[30px] sm:rounded-[40px] overflow-hidden shadow-2xl border-[6px] md:border-[8px] border-primary-light">
-              <div 
-                className="w-full h-full flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out"
-                style={{ background: aboutData.images[imgIndex].gradient, opacity: imgVisible ? 1 : 0 }}
-              >
-                <div className="text-6xl md:text-8xl mb-4 md:mb-6 opacity-30 text-white animate-pulse">✨</div>
-                <div className="text-sm md:text-lg tracking-[4px] md:tracking-[8px] text-white font-black uppercase drop-shadow-2xl">
-                  {aboutData.images[imgIndex].label}
-                </div>
-              </div>
+              <img 
+                src={aboutData.images[imgIndex].image} 
+                alt={aboutData.images[imgIndex].label}
+                className="w-full h-full object-cover transition-opacity duration-700 ease-in-out"
+                style={{ opacity: imgVisible ? 1 : 0 }}
+              />
 
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent pointer-events-none" />

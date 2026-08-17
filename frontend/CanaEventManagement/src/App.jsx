@@ -13,6 +13,7 @@ import WhatWeDo        from './components/WhatWeDo';
 import FounderProfile  from './components/FounderProfile';
 import EnquiryPage     from './components/EnquiryPage';
 import ContactPage     from './components/ContactPage';
+import PortfolioSection from './components/PortfolioSection';
 
 function HomePage() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/about" element={<AboutUs />} />
         <Route path="/founder" element={<FounderProfile />} />
         <Route path="/what-we-do" element={<WhatWeDo />} />
+        <Route path="/portfolio" element={<><PortfolioSection /><Footer /></>} />
         <Route path="/enquiry" element={<EnquiryPage />} />
         <Route path="/contact" element={<ContactPage />} />
       </Routes>

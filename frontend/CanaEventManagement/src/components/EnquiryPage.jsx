@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Send, MapPin, Calendar, MessageSquare, Phone, User, Sparkles } from 'lucide-react';
 import { companyData } from "../data/companyData";
+import { allServices } from "../data/services";
+import { sendEnquiryEmail } from "../utils/emailService";
 
 // 2. Dynamic Variables
 const enquiryData = {
@@ -15,7 +17,7 @@ const enquiryData = {
     desc: "Whether you are planning a massive stadium concert or an intimate luxury wedding, our production team is ready to bring your vision to life. Fill out the details, and our founder will review your requirements personally.",
     badge: {
       tag: "“THE POWER OF PRODUCTION”",
-      text: "Follow us for behind-the-scenes content of our latest 2,000+ successful events.",
+      text: "Follow us for behind-the-scenes content of our latest successful events.",
       button: "FOLLOW ON INSTAGRAM"
     }
   },
@@ -28,18 +30,21 @@ const enquiryData = {
       email: "Email Address",
       eventVenue: "Event Venue",
       eventDate: "Event Date",
+      eventType: "Event / Service Type",
+      customService: "Please specify your service",
       message: "Your Message / Requirements"
     },
     placeholders: {
       firstName: "John",
       lastName: "Doe",
-      mobileNumber: companyData.phone,
-      email: companyData.email,
+      mobileNumber: "7337480184",
+      email: "canaeventselite@gmail.com",
       eventVenue: "City, State or Specific Hotel",
       message: "Tell us about your dream event..."
     },
     submitBtn: "SEND ENQUIRY NOW",
-    successAlert: "Thank you! Your enquiry has been sent to our founder. We will get back to you shortly."
+    successAlert: "Thank you! Your enquiry has been sent successfully. Our team will contact you shortly.",
+    errorAlert: "Unable to send your enquiry right now. Please try again or contact us directly."
   }
 };
 
@@ -50,8 +55,6 @@ const getSocialIcon = (name) => {
       return "📸";
     case 'facebook':
       return "👤";
-    case 'youtube':
-      return "▶";
     case 'whatsapp':
       return "💬";
     default:
@@ -62,17 +65,57 @@ const getSocialIcon = (name) => {
 // 3. Component
 export default function EnquiryPage() {
   const [formData, setFormData] = useState({
-    firstName: '', lastName: '', mobileNumber: '', email: '',
-    eventVenue: '', eventDate: '', message: ''
+    firstName: '', 
+    lastName: '', 
+    mobileNumber: '', 
+    email: '',
+    eventVenue: '', 
+    eventDate: '', 
+    eventType: '', 
+    customService: '',
+    message: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [sentStatus, setSentStatus] = useState(null); // 'success' | 'error' | null
   const [focused, setFocused] = useState("");
 
   const handleChange = (e) => setFormData(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    alert(enquiryData.form.successAlert);
+
+    // Field validations
+    if (!formData.firstName || !formData.email || !formData.mobileNumber || !formData.eventVenue || !formData.eventDate || !formData.eventType || !formData.message) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    if (formData.eventType === "Custom Service" && !formData.customService) {
+      alert("Please specify your service.");
+      return;
+    }
+
+    setLoading(true);
+    setSentStatus(null);
+
+    try {
+      // Programmatic email submission via EmailJS helper
+      await sendEnquiryEmail({
+        ...formData,
+        phone: formData.mobileNumber // Normalize to phone
+      });
+      
+      setSentStatus("success");
+      setFormData({
+        firstName: '', lastName: '', mobileNumber: '', email: '',
+        eventVenue: '', eventDate: '', eventType: '', customService: '', message: ''
+      });
+    } catch (err) {
+      console.error("Submission error details:", err);
+      setSentStatus("error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = (field) => `
@@ -153,87 +196,128 @@ export default function EnquiryPage() {
               {enquiryData.form.title} <div className="h-[1px] flex-1 max-w-[96px] bg-secondary/50" />
             </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.firstName} *</label>
-                  <div className="relative">
-                    <User className={iconClass('firstName')} size={18} />
-                    <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required
-                      onFocus={() => setFocused('firstName')} onBlur={() => setFocused('')}
-                      placeholder={enquiryData.form.placeholders.firstName} className={inputClass('firstName')} />
-                  </div>
-                </div>
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.lastName} *</label>
-                  <div className="relative">
-                    <User className={iconClass('lastName')} size={18} />
-                    <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} required
-                      onFocus={() => setFocused('lastName')} onBlur={() => setFocused('')}
-                      placeholder={enquiryData.form.placeholders.lastName} className={inputClass('lastName')} />
-                  </div>
-                </div>
+            {sentStatus === "success" && (
+              <div className="py-16 text-center animate-reveal">
+                <div className="text-5xl sm:text-7xl mb-6 text-secondary">✓</div>
+                <h3 className="text-xl sm:text-2xl font-black text-white uppercase mb-4">{enquiryData.form.successAlert}</h3>
+                <button onClick={() => setSentStatus(null)} className="btn-premium mt-6 text-xs">Submit Another Enquiry</button>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.mobileNumber} *</label>
-                  <div className="relative">
-                    <Phone className={iconClass('mobileNumber')} size={18} />
-                    <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required
-                      onFocus={() => setFocused('mobileNumber')} onBlur={() => setFocused('')}
-                      placeholder={enquiryData.form.placeholders.mobileNumber} className={inputClass('mobileNumber')} />
-                  </div>
-                </div>
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.email} *</label>
-                  <div className="relative">
-                    <Send className={iconClass('email')} size={18} />
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required
-                      onFocus={() => setFocused('email')} onBlur={() => setFocused('')}
-                      placeholder={enquiryData.form.placeholders.email} className={inputClass('email')} />
-                  </div>
-                </div>
+            {sentStatus === "error" && (
+              <div className="py-16 text-center animate-reveal">
+                <div className="text-5xl sm:text-7xl mb-6 text-rose-500">⚠</div>
+                <h3 className="text-xl sm:text-2xl font-black text-white uppercase mb-4">{enquiryData.form.errorAlert}</h3>
+                <button onClick={() => setSentStatus(null)} className="btn-premium mt-6 text-xs">Try Again</button>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.eventVenue} *</label>
-                  <div className="relative">
-                    <MapPin className={iconClass('eventVenue')} size={18} />
-                    <input type="text" name="eventVenue" value={formData.eventVenue} onChange={handleChange} required
-                      onFocus={() => setFocused('eventVenue')} onBlur={() => setFocused('')}
-                      placeholder={enquiryData.form.placeholders.eventVenue} className={inputClass('eventVenue')} />
+            {!sentStatus && (
+              <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  <div className="space-y-2 sm:space-y-3">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.firstName} *</label>
+                    <div className="relative">
+                      <User className={iconClass('firstName')} size={18} />
+                      <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} required
+                        onFocus={() => setFocused('firstName')} onBlur={() => setFocused('')}
+                        placeholder={enquiryData.form.placeholders.firstName} className={inputClass('firstName')} />
+                    </div>
+                  </div>
+                  <div className="space-y-2 sm:space-y-3">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.lastName}</label>
+                    <div className="relative">
+                      <User className={iconClass('lastName')} size={18} />
+                      <input type="text" name="lastName" value={formData.lastName} onChange={handleChange}
+                        onFocus={() => setFocused('lastName')} onBlur={() => setFocused('')}
+                        placeholder={enquiryData.form.placeholders.lastName} className={inputClass('lastName')} />
+                    </div>
                   </div>
                 </div>
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.eventDate} *</label>
-                  <div className="relative">
-                    <Calendar className={iconClass('eventDate')} size={18} />
-                    <input type="date" name="eventDate" value={formData.eventDate} onChange={handleChange} required
-                      onFocus={() => setFocused('eventDate')} onBlur={() => setFocused('')}
-                      className={inputClass('eventDate')} />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  <div className="space-y-2 sm:space-y-3">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.mobileNumber} *</label>
+                    <div className="relative">
+                      <Phone className={iconClass('mobileNumber')} size={18} />
+                      <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleChange} required
+                        onFocus={() => setFocused('mobileNumber')} onBlur={() => setFocused('')}
+                        placeholder={enquiryData.form.placeholders.mobileNumber} className={inputClass('mobileNumber')} />
+                    </div>
+                  </div>
+                  <div className="space-y-2 sm:space-y-3">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.email} *</label>
+                    <div className="relative">
+                      <Send className={iconClass('email')} size={18} />
+                      <input type="email" name="email" value={formData.email} onChange={handleChange} required
+                        onFocus={() => setFocused('email')} onBlur={() => setFocused('')}
+                        placeholder={enquiryData.form.placeholders.email} className={inputClass('email')} />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-2 sm:space-y-3">
-                <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.message} *</label>
-                <div className="relative">
-                  <MessageSquare className={`absolute left-5 top-5 transition-colors duration-300 ${focused === 'message' ? 'text-secondary' : 'text-secondary/30'}`} size={18} />
-                  <textarea name="message" value={formData.message} onChange={handleChange} required
-                    rows="5" onFocus={() => setFocused('message')} onBlur={() => setFocused('')}
-                    placeholder={enquiryData.form.placeholders.message}
-                    className={`w-full pl-14 pr-6 py-4 rounded-xl font-['Cormorant_Garamond'] text-xl text-white outline-none transition-all duration-300 bg-primary/40 border backdrop-blur-2xl resize-none ${focused === 'message' ? 'border-secondary shadow-[0_0_20px_rgba(201,168,76,0.3)] bg-primary-light/40' : 'border-secondary/10 hover:border-secondary/30'}`}
-                  ></textarea>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                  <div className="space-y-2 sm:space-y-3">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.eventVenue} *</label>
+                    <div className="relative">
+                      <MapPin className={iconClass('eventVenue')} size={18} />
+                      <input type="text" name="eventVenue" value={formData.eventVenue} onChange={handleChange} required
+                        onFocus={() => setFocused('eventVenue')} onBlur={() => setFocused('')}
+                        placeholder={enquiryData.form.placeholders.eventVenue} className={inputClass('eventVenue')} />
+                    </div>
+                  </div>
+                  <div className="space-y-2 sm:space-y-3">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.eventDate} *</label>
+                    <div className="relative">
+                      <Calendar className={iconClass('eventDate')} size={18} />
+                      <input type="date" name="eventDate" value={formData.eventDate} onChange={handleChange} required
+                        onFocus={() => setFocused('eventDate')} onBlur={() => setFocused('')}
+                        className={inputClass('eventDate')} />
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <button type="submit" className="btn-premium w-full py-4 sm:py-6 text-[12px] sm:text-[14px] flex justify-center items-center gap-3 sm:gap-4 group mt-6 sm:mt-10">
-                <span>{enquiryData.form.submitBtn}</span>
-                <Send size={18} className="group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform duration-500" />
-              </button>
-            </form>
+                <div className="space-y-2 sm:space-y-3">
+                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.eventType} *</label>
+                  <div className="relative">
+                    <select name="eventType" value={formData.eventType} onChange={handleChange} required
+                      onFocus={() => setFocused('eventType')} onBlur={() => setFocused('')}
+                      className="w-full px-6 py-4 rounded-xl font-['Cormorant_Garamond'] text-xl text-white outline-none transition-all duration-300 bg-primary/40 border backdrop-blur-2xl border-secondary/10 hover:border-secondary/35 cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%20fill%3D%22%23C9A84C%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_20px_center]">
+                      <option value="" className="bg-primary">Select event type…</option>
+                      {allServices.map(o => <option key={o.id} value={o.name} className="bg-primary">{o.name}</option>)}
+                    </select>
+                  </div>
+                </div>
+
+                {formData.eventType === "Custom Service" && (
+                  <div className="space-y-2 sm:space-y-3 animate-reveal">
+                    <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.customService} *</label>
+                    <div className="relative">
+                      <Sparkles className={iconClass('customService')} size={18} />
+                      <input type="text" name="customService" value={formData.customService} onChange={handleChange} required
+                        onFocus={() => setFocused('customService')} onBlur={() => setFocused('')}
+                        placeholder="e.g. Traditional Housewarming Ceremony" className={inputClass('customService')} />
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-2 sm:space-y-3">
+                  <label className="text-[9px] sm:text-[10px] font-black uppercase tracking-[2px] sm:tracking-[3px] text-secondary/60 ml-2">{enquiryData.form.labels.message} *</label>
+                  <div className="relative">
+                    <MessageSquare className={`absolute left-5 top-5 transition-colors duration-300 ${focused === 'message' ? 'text-secondary' : 'text-secondary/30'}`} size={18} />
+                    <textarea name="message" value={formData.message} onChange={handleChange} required
+                      rows="5" onFocus={() => setFocused('message')} onBlur={() => setFocused('')}
+                      placeholder={enquiryData.form.placeholders.message}
+                      className={`w-full pl-14 pr-6 py-4 rounded-xl font-['Cormorant_Garamond'] text-xl text-white outline-none transition-all duration-300 bg-primary/40 border backdrop-blur-2xl resize-none ${focused === 'message' ? 'border-secondary shadow-[0_0_20px_rgba(201,168,76,0.3)] bg-primary-light/40' : 'border-secondary/10 hover:border-secondary/30'}`}
+                    ></textarea>
+                  </div>
+                </div>
+
+                <button type="submit" disabled={loading} className="btn-premium w-full py-4 sm:py-6 text-[12px] sm:text-[14px] flex justify-center items-center gap-3 sm:gap-4 group mt-6 sm:mt-10">
+                  <span>{loading ? "Sending..." : "Send Message"}</span>
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>

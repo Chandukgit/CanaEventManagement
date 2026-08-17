@@ -2,6 +2,7 @@
 import React from 'react';
 import { Target, BookOpen, ExternalLink, Sparkles } from 'lucide-react';
 import { companyData } from "../data/companyData";
+import founderImg from "../assets/images/founder/founder.png";
 
 // 2. Dynamic Variables
 const founderData = {
@@ -10,45 +11,36 @@ const founderData = {
     subtitle: "Meet Our Founder"
   },
   profile: {
-    name: "Alex J. Cana",
-    role: "Chief Visionary & Founder",
-    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800",
+    name: "nehamiah_raj",
+    role: "Founder (5+ YEARS OF EXPERIENCE)",
+    image: founderImg,
     socials: companyData.socials
   },
   biography: {
     quote: '"Events are not just gatherings; they are living, breathing moments of human connection that require both technical precision and artistic soul."',
     storyTitle: "The Journey",
     paragraphs: [
-      `With over a decade of experience in the creative arts and technical production, Alex J. Cana established ${companyData.logoText} Events with the belief that "The Power of Production" could transform ordinary spaces into extraordinary memories. Starting with small-scale college festivals, Alex's eye for innovation quickly caught the attention of corporate giants and high-profile clients.`,
-      "Alex's philosophy centers on the \"Zero-Failure Policy.\" Every lighting cue, every floral arrangement, and every guest experience is personally vetted through a lens of perfectionism. His leadership style is a unique blend of youthful energy and world-class hospitality standards, fostering a culture where \"Impossible\" is just a starting point for brainstorming.",
-      "Beyond business, Alex is a frequent speaker at national event tech summits and is passionate about mentoring the next generation of event architects. He believes that the future of the industry lies in the seamless integration of AI, sustainable materials, and raw human emotion."
+      `With over 5+ years of experience in the creative arts and technical production, Nehamiah Raj established CANA EVENT MANAGEMENT with the belief that "The Power of Production" could transform ordinary spaces into extraordinary memories. Starting with local celebrations and school/college events, Nehamiah's eye for innovation quickly caught the attention of corporate clients.`,
+      "Nehamiah's philosophy centers on a client-first, zero-failure policy. Every lighting cue, every catering setup, and every guest experience is personally vetted to guarantee elegance and precision. His leadership style is a unique blend of youthful energy and professional planning standards, ensuring that every event is an unforgettable milestone.",
+      "CANA EVENT MANAGEMENT prides itself on turning fragmented ideas into concrete reality. From empty barren lands to top-notch production arenas, Nehamiah Raj has guided the team to deliver premium celebrations across South India."
     ]
   },
   coreValues: [
     {
       title: "Strategic Precision",
-      desc: "Meticulous planning that accounts for every variable from logistics to weather.",
+      desc: "Meticulous planning that accounts for every variable from logistics to execution.",
       icon: <Target className="w-8 h-8 text-secondary mb-4" />
     },
     {
-      title: "Lifelong Learning",
-      desc: "Constantly evolving with global trends to bring international standards to India.",
+      title: "Client-focused Approach",
+      desc: "Creating deep relationships with our clients to deliver tailored design concepts.",
       icon: <BookOpen className="w-8 h-8 text-secondary mb-4" />
     }
   ],
-  milestones: {
-    title: "Professional Milestones",
-    items: [
-      { year: "2014", detail: "Founded Cana Events with a vision to redefine production standards." },
-      { year: "2018", detail: "Awarded 'Young Entrepreneur of the Year' in the Event Management category." },
-      { year: "2021", detail: "Expanded operations to 15+ states across India, managing 500+ large-scale concerts." },
-      { year: "2023", detail: "Pioneered Sustainable Event Production techniques now used across the industry." }
-    ]
-  },
   cta: {
-    title: "Work Directly With Alex",
-    desc: "For exclusive weddings and corporate gala events.",
-    button: "BOOK A CONSULTATION"
+    title: "Work Directly With Nehamiah",
+    desc: "For exclusive weddings, corporate galas, and school & college celebrations.",
+    button: "SEND A MESSAGE"
   }
 };
 
@@ -59,8 +51,6 @@ const getSocialIcon = (name) => {
       return "📸";
     case 'facebook':
       return "👤";
-    case 'youtube':
-      return "▶";
     case 'whatsapp':
       return "💬";
     default:
@@ -101,7 +91,7 @@ export default function FounderProfile() {
               <div className="relative rounded-[1.8rem] sm:rounded-[2.5rem] overflow-hidden shadow-2xl aspect-[4/5] glass-card border-secondary/10">
                 <img 
                   src={founderData.profile.image} 
-                  alt="Founder" 
+                  alt="Nehamiah Raj - Founder" 
                   className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000 grayscale hover:grayscale-0"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-transparent to-transparent opacity-80" />
@@ -169,35 +159,6 @@ export default function FounderProfile() {
               ))}
             </div>
 
-            {/* Milestones */}
-            <section className="pt-16 sm:pt-20 border-t border-secondary/10">
-              <h4 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-[3px] sm:tracking-[5px] flex items-center gap-4 sm:gap-6 mb-12 sm:mb-16">
-                <span className="w-12 sm:w-16 h-[1px] bg-secondary" />
-                {founderData.milestones.title}
-              </h4>
-              
-              <div className="space-y-12 sm:space-y-16 pl-2 sm:pl-4">
-                {founderData.milestones.items.map((item, index) => (
-                  <div key={index} className="flex gap-8 sm:gap-12 group relative">
-                    {index !== founderData.milestones.items.length - 1 && (
-                      <div className="absolute left-[7px] top-8 bottom-[-32px] sm:bottom-[-40px] w-[2px] bg-gradient-to-b from-secondary/40 to-transparent" />
-                    )}
-                    <div className="flex flex-col items-center relative z-10">
-                      <div className="w-4 h-4 rounded-full glass-card border-secondary shadow-[0_0_20px_rgba(201,168,76,0.6)] bg-secondary group-hover:scale-150 transition-all duration-500" />
-                    </div>
-                    <div className="pb-4 transform group-hover:translate-x-4 transition-all duration-500">
-                      <span className="text-2xl sm:text-3xl font-black text-gold-gradient tracking-[2px] sm:tracking-[4px]">
-                        {item.year}
-                      </span>
-                      <p className="font-['Cormorant_Garamond'] text-xl sm:text-2xl text-white/60 mt-2 sm:mt-4 italic leading-relaxed">
-                        "{item.detail}"
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
             {/* CTA */}
             <div className="mt-16 sm:mt-24 glass-card p-10 sm:p-16 md:p-20 border-secondary/10 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-10 md:gap-12 relative overflow-hidden bg-gradient-to-br from-primary-light to-primary rounded-[2rem] sm:rounded-[3rem]">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCI+CjxyZWN0IHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSI+PC9yZWN0Pgo8Y2lyY2xlIGN4PSIwLjUiIGN5PSIwLjUiIHI9IjAuNSIgZmlsbD0icmdiYSgyMDEsMTY4LDc2LDAuMSkiPjwvY2lyY2xlPgo8L3N2Zz4=')] opacity-20 pointer-events-none" />
@@ -206,7 +167,7 @@ export default function FounderProfile() {
                 <h4 className="text-2xl sm:text-3xl md:text-4xl font-black mb-3 sm:mb-4 text-white tracking-[3px] sm:tracking-[5px] uppercase drop-shadow-2xl">{founderData.cta.title}</h4>
                 <p className="font-['Cormorant_Garamond'] text-xl sm:text-2xl text-white/40 italic">"{founderData.cta.desc}"</p>
               </div>
-              <a href="#contact" className="btn-premium px-8 py-4 sm:px-10 sm:py-6 text-[12px] sm:text-[14px] whitespace-nowrap inline-flex items-center gap-2">
+              <a href="/enquiry" className="btn-premium px-8 py-4 sm:px-10 sm:py-6 text-[12px] sm:text-[14px] whitespace-nowrap inline-flex items-center gap-2">
                 {founderData.cta.button} <ExternalLink size={18} className="animate-pulse" />
               </a>
             </div>

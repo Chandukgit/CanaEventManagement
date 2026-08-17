@@ -2,40 +2,44 @@
 import React, { useEffect, useRef, useState } from "react";
 import { companyData } from "../data/companyData";
 
+// Import client logos
+import accordLogo from "../assets/images/clients/accord.png";
+import biocopperLogo from "../assets/images/clients/biocopper.jpeg";
+import hollycrossLogo from "../assets/images/clients/hollycross.jpeg";
+import iitsricityLogo from "../assets/images/clients/iitsricity.png";
+import kreaLogo from "../assets/images/clients/krea.png";
+import londonkidLogo from "../assets/images/clients/londonkid.png";
+import monnarchLogo from "../assets/images/clients/monnarch.jpg";
+import svceLogo from "../assets/images/clients/svce.png";
+import vivoLogo from "../assets/images/clients/vivo.png";
+
 // 2. Dynamic Variables
 const clientsData = {
   sectionLabel: "Trust & Legacy",
   heading: { main: "Who", highlight: "Trusts Us" },
-  tagline: "Trusted by 300+ organisations across South India & beyond",
+  tagline: "Trusted by 30+ organisations across South India & beyond",
   tabs: [
     { id: "clients", label: "Our Clients" },
     { id: "events", label: "Success Events" }
   ],
   clients: [
-    { name: "SIMATS", cat: "College", emoji: "🎓" },
-    { name: "SSN Engineering", cat: "College", emoji: "🏛️" },
-    { name: "Bosch", cat: "Corporate", emoji: "⚙️" },
-    { name: "L&T", cat: "Corporate", emoji: "🏗️" },
-    { name: "Ramco", cat: "Corporate", emoji: "🏭" },
-    { name: "Amazon", cat: "Corporate", emoji: "📦" },
-    { name: "Nissan", cat: "Corporate", emoji: "🚗" },
-    { name: "VIT University", cat: "College", emoji: "🎓" },
-    { name: "Anna University", cat: "College", emoji: "🏫" },
-    { name: "Vel Tech", cat: "College", emoji: "🎓" },
-    { name: "CSIR-CLRI", cat: "Research", emoji: "🔬" },
-    { name: "Sathyabama", cat: "College", emoji: "🎓" },
-    { name: "Madha Engg", cat: "College", emoji: "🏫" },
-    { name: "Kubota", cat: "Corporate", emoji: "🌾" },
-    { name: "Chennai IT", cat: "College", emoji: "💻" },
-    { name: "Saveetha Univ", cat: "College", emoji: "🎓" },
+    { name: "BIO COPER", cat: "Healthcare", logo: biocopperLogo },
+    { name: "ACCORD", cat: "Hospitality", logo: accordLogo },
+    { name: "ACCORD, TIRUPATI", cat: "Hospitality", logo: accordLogo },
+    { name: "SVCE", cat: "Education", logo: svceLogo },
+    { name: "HOLY CROSS", cat: "Education", logo: hollycrossLogo },
+    { name: "MONNARCH", cat: "Corporate", logo: monnarchLogo },
+    { name: "KREA UNIVERSITY", cat: "University", logo: kreaLogo },
+    { name: "IIIT, SRI CITY", cat: "University", logo: iitsricityLogo },
+    { name: "LONDON KIDS", cat: "Pre School Chain", logo: londonkidLogo },
+    { name: "VIVO PRODUCT LAUNCH - Vivo V70 Series", cat: "Product Launch", logo: vivoLogo },
   ],
   events: [
-    { icon: "💍", title: "Royal Wedding", loc: "Chennai Palace Grounds", year: "2024", tag: "Wedding" },
-    { icon: "🎓", title: "AEGON Fest 2024", loc: "Saveetha Engineering", year: "2024", tag: "College Fest" },
-    { icon: "🏢", title: "Annual Corp Gala", loc: "ITC Grand Chola", year: "2023", tag: "Corporate" },
-    { icon: "📸", title: "Fashion Shoot", loc: "ECR Beachfront Studio", year: "2024", tag: "Photo Shoot" },
-    { icon: "🎂", title: "Grand 50th B'day", loc: "Leela Palace Chennai", year: "2024", tag: "Birthday" },
-    { icon: "🚀", title: "Product Launch", loc: "World Trade Centre", year: "2023", tag: "Corporate" },
+    { icon: "💍", title: "Premium Weddings", loc: "Tirupathi & tada", year: "2025", tag: "Weddings" },
+    { icon: "🎓", title: "College Festivals", loc: "Institutional Campus", year: "2024", tag: "College Fest" },
+    { icon: "🏢", title: "Corporate Launches", loc: "Elite Venues", year: "2025", tag: "Corporate" },
+    { icon: "📸", title: "Commercial Shoots", loc: "South India Studios", year: "2024", tag: "Photo Shoot" },
+    { icon: "🎂", title: "Milestone Birthdays", loc: "Private Gala Hall", year: "2025", tag: "Celebration" },
   ]
 };
 
@@ -147,16 +151,20 @@ function ClientCard({ client }) {
     <div
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
-      className={`min-w-[180px] sm:min-w-[240px] p-6 sm:p-8 glass-card border-secondary/10 flex flex-col items-center gap-2 sm:gap-3 cursor-default shrink-0 transition-all duration-500 ease-out ${
+      className={`min-w-[200px] sm:min-w-[260px] p-6 sm:p-8 glass-card border-secondary/10 flex flex-col items-center justify-center gap-3 sm:gap-4 cursor-default shrink-0 transition-all duration-500 ease-out ${
         hov 
           ? "bg-secondary/10 border-secondary -translate-y-2 shadow-2xl scale-105" 
           : "bg-primary-light/40 translate-y-0 scale-100"
       }`}
     >
-      <div className={`text-4xl sm:text-5xl mb-2 sm:mb-3 transition-transform duration-500 ${hov ? "scale-125 rotate-6" : "scale-100 rotate-0"}`}>
-        {client.emoji}
+      <div className={`h-16 w-full flex items-center justify-center transition-transform duration-500 ${hov ? "scale-110" : "scale-100"}`}>
+        <img 
+          src={client.logo} 
+          alt={client.name} 
+          className="max-h-full max-w-[85%] object-contain rounded-lg filter brightness-95" 
+        />
       </div>
-      <div className={`text-[10px] sm:text-[12px] tracking-[2px] sm:tracking-[3px] uppercase text-center font-black transition-colors duration-300 ${
+      <div className={`text-[10px] sm:text-[11px] tracking-[2px] sm:tracking-[3px] uppercase text-center font-black transition-colors duration-300 ${
         hov ? "text-secondary" : "text-white/80"
       }`}>
         {client.name}

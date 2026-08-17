@@ -9,10 +9,10 @@ const statsData = {
   subtitle: "Every milestone is a story of trust, creativity, and flawless execution.",
   tagline: `Trusted by Colleges, Corporates & Families across India`,
   stats: [
-    { end: 500, suffix: "+", label: "Events Done", icon: "🎪", desc: "Across India" },
-    { end: 10, suffix: "+", label: "Years Experience", icon: "⭐", desc: "Of Excellence" },
-    { end: 1000, suffix: "+", label: "Happy Clients", icon: "🤝", desc: "& Counting" },
-    { end: 50, suffix: "+", label: "Cities Covered", icon: "🗺️", desc: "Pan India" }
+    { end: 30, suffix: "+", label: "Events Done", icon: "🎪", desc: "Across South India" },
+    { end: 5, suffix: "+", label: "Years Experience", icon: "⭐", desc: "Of Excellence" },
+    { end: 100, suffix: "+", label: "Happy Clients", icon: "🤝", desc: "& Counting" },
+    { end: 20, suffix: "+", label: "Cities Covered", icon: "🗺️", desc: "Pan India" }
   ]
 };
 

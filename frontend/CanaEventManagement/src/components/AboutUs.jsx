@@ -1,7 +1,18 @@
 // 1. Imports
 import React from 'react';
-import { Award, Target, Eye, Calendar, Heart, Star, Send } from 'lucide-react';
+import { Award, Target, Eye, Calendar, Heart, Star, Send, Users, MapPin } from 'lucide-react';
 import { companyData } from "../data/companyData";
+
+// Load local images dynamically
+const localGlob = import.meta.glob('/src/assets/images/*/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', { eager: true, import: 'default' });
+const getAboutImage = (folder, fallbackIndex) => {
+  const matched = Object.keys(localGlob).find(path => path.toLowerCase().includes(`/${folder}/`));
+  if (matched) return localGlob[matched];
+  // Fallback to one of the hero images if they exist
+  const heroGlob = import.meta.glob('/src/assets/images/hero/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', { eager: true, import: 'default' });
+  const heroes = Object.values(heroGlob);
+  return heroes[fallbackIndex % heroes.length] || "/src/assets/images/hero_bg_1.png";
+};
 
 // 2. Dynamic Variables
 const aboutData = {
@@ -11,28 +22,28 @@ const aboutData = {
   },
   socials: companyData.socials,
   intro: {
-    subheading: `About ${companyData.logoText} Events`,
+    subheading: "About CANA EVENT MANAGEMENT",
     heading: "An Event Management And Event Production Company",
     paragraphs: [
-      `${companyData.logoText} Events is a premier Event Management and Event Production Company. One of our key strengths is Innovation, which, coupled with attention to creativeness and unique ideas in different dimensions, helps in creating a magical experience for you. We have successfully orchestrated over 1000+ events across the region, concentrating on every need and occasion, be it big or small.`,
+      "CANA EVENT MANAGEMENT is a premier Event Management and Event Production Company. One of our key strengths is Innovation, which, coupled with attention to creativeness and unique ideas in different dimensions, helps in creating a magical experience for you. We have successfully orchestrated over 30+ events across the region, concentrating on every need and occasion, be it big or small.",
       "Our hospitality and services match international standards, allowing us to give concreteness to even the most fragmented piece of an idea or concept. By giving meticulous attention to the minute details provided by our clients, we offer the most reliable and pragmatic solutions in the industry.",
       "We truly believe in excellence, which drives us to deliver top-class experiences at your doorstep. Our team of highly experienced, world-class, and youthful professionals can turn any vision into a scintillating outcome. We don't just follow trends; we set them."
     ],
     buttonText: "CONTACT US",
-    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&q=80&w=800",
-    badge: { value: "10+", label: "Years of Magic" }
+    get image() { return getAboutImage("gallery", 0); },
+    badge: { value: "5+", label: "Years of Experience" }
   },
   stats: [
-    { label: "Events Done", value: "100+", icon: <Calendar className="w-8 h-8" /> },
-    { label: "Years Of Experience", value: "7+", icon: <Award className="w-8 h-8" /> },
-    { label: "Happy Clients", value: "1,000+", icon: <Calendar className="w-8 h-8" /> }, // Fallback to calendar icon for similarity or import standard
-    { label: "Expert Professionals", value: "50+", icon: <Heart className="w-8 h-8" /> },
+    { label: "Events Done", value: "30+", icon: <Calendar className="w-8 h-8" /> },
+    { label: "Years Of Experience", value: "5+", icon: <Award className="w-8 h-8" /> },
+    { label: "Happy Clients", value: "100+", icon: <Users className="w-8 h-8" /> }, 
+    { label: "Cities Covered", value: "20+", icon: <MapPin className="w-8 h-8" /> },
   ],
   pillars: [
     {
       title: "Our Style",
       icon: <Star size={24} />,
-      desc: `"${companyData.logoText}: Illuminating Your Dreams with Expertise and Innovation. Our unwavering commitment has established us as a reliable partner. We are dedicated to pushing boundaries through advanced techniques and mastering craftsmanship."`,
+      desc: "CANA EVENT MANAGEMENT: Illuminating Your Dreams with Expertise and Innovation. Our unwavering commitment has established us as a reliable partner. We are dedicated to pushing boundaries through advanced techniques and mastering craftsmanship.",
       tag: '" THE POWER OF PRODUCTION "'
     },
     {
@@ -148,7 +159,7 @@ export default function AboutUs() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 mb-24 sm:mb-40">
           {aboutData.pillars.map((pillar, index) => (
             <div key={index} className="glass-card p-8 sm:p-12 rounded-[2rem] sm:rounded-[3rem] border-secondary/10 shadow-2xl hover:border-secondary/30 hover:-translate-y-4 transition-all duration-500 group bg-primary-light/30">
-              <div className="w-16 h-16 sm:w-20 sm:w-20 rounded-[1.2rem] sm:rounded-[1.5rem] flex items-center justify-center text-secondary mb-6 sm:mb-10 glass-card border-secondary/20 group-hover:bg-secondary group-hover:text-primary transition-all duration-500 animate-float" style={{ animationDelay: `${index * 0.5}s` }}>
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-[1.2rem] sm:rounded-[1.5rem] flex items-center justify-center text-secondary mb-6 sm:mb-10 glass-card border-secondary/20 group-hover:bg-secondary group-hover:text-primary transition-all duration-500 animate-float" style={{ animationDelay: `${index * 0.5}s` }}>
                 {pillar.icon}
               </div>
               <h3 className="text-2xl sm:text-3xl font-black mb-4 sm:mb-6 text-white uppercase tracking-[1px] sm:tracking-[2px]">{pillar.title}</h3>

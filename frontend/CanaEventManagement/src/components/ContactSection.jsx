@@ -1,6 +1,12 @@
 // 1. Imports
 import React, { useState, useEffect, useRef } from "react";
 import { companyData } from "../data/companyData";
+import { allServices } from "../data/services";
+import { sendEnquiryEmail } from "../utils/emailService";
+
+// Dynamically resolve WhatsApp QR if available
+const contactGlob = import.meta.glob('/src/assets/images/contact/*.{png,jpg,jpeg,webp,PNG,JPG,JPEG,WEBP}', { eager: true, import: 'default' });
+const whatsappQr = Object.values(contactGlob)[0] || null;
 
 // 2. Dynamic Variables
 const contactData = {
@@ -15,17 +21,25 @@ const contactData = {
     { icon: "🕐", label: "Working Hrs", value: companyData.workingHours }
   ],
   socialLinks: companyData.socials,
-  formOptions: ["Wedding", "Corporate Event", "College Fest", "Birthday Party", "Photo Shoot", "Other"],
   messages: {
-    success: "Message Sent!",
-    successDesc: "We'll get back to you within 24 hours"
+    success: "Thank you! Your enquiry has been sent successfully. Our team will contact you shortly.",
+    error: "Unable to send your enquiry right now. Please try again or contact us directly."
   }
 };
 
 // 3. Component
 export default function ContactSection() {
-  const [form, setForm] = useState({ firstName: "", lastName: "", phone: "", email: "", eventType: "", message: "" });
-  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ 
+    firstName: "", 
+    lastName: "", 
+    phone: "", 
+    email: "", 
+    eventType: "", 
+    customService: "",
+    message: "" 
+  });
+  const [loading, setLoading] = useState(false);
+  const [sentStatus, setSentStatus] = useState(null); // 'success' or 'error' or null
   const [focused, setFocused] = useState("");
   const [inView, setInView] = useState(false);
   const sectionRef = useRef(null);
@@ -38,12 +52,30 @@ export default function ContactSection() {
 
   const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.firstName || !form.email || !form.message) return;
-    setSent(true);
-    setTimeout(() => setSent(false), 4000);
-    setForm({ firstName: "", lastName: "", phone: "", email: "", eventType: "", message: "" });
+    
+    // Additional validation for Custom Service
+    if (form.eventType === "Custom Service" && !form.customService) {
+      alert("Please specify your service");
+      return;
+    }
+
+    setLoading(true);
+    setSentStatus(null);
+
+    try {
+      // Programmatic email submission via EmailJS helper
+      await sendEnquiryEmail(form);
+      setSentStatus("success");
+      setForm({ firstName: "", lastName: "", phone: "", email: "", eventType: "", customService: "", message: "" });
+    } catch (err) {
+      console.error("Submission error details:", err);
+      setSentStatus("error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const inputClass = (field) => `
@@ -137,17 +169,27 @@ export default function ContactSection() {
                 Send A Message
               </div>
 
-              {sent ? (
+              {sentStatus === "success" && (
                 <div className="py-16 sm:py-24 text-center animate-reveal">
-                  <div className="text-5xl sm:text-7xl mb-6 sm:mb-8 animate-float">✨</div>
-                  <div className="text-xl sm:text-2xl tracking-[3px] sm:tracking-[4px] text-white uppercase font-black mb-2 sm:mb-4">
+                  <div className="text-5xl sm:text-7xl mb-6 sm:mb-8 text-secondary">✓</div>
+                  <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/80 italic mb-6">
                     {contactData.messages.success}
-                  </div>
-                  <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/50 italic">
-                    "{contactData.messages.successDesc}"
                   </p>
+                  <button onClick={() => setSentStatus(null)} className="btn-premium mt-8 text-xs">Send Another Message</button>
                 </div>
-              ) : (
+              )}
+
+              {sentStatus === "error" && (
+                <div className="py-16 sm:py-24 text-center animate-reveal">
+                  <div className="text-5xl sm:text-7xl mb-6 sm:mb-8 text-rose-500">⚠</div>
+                  <p className="font-['Cormorant_Garamond'] text-lg sm:text-xl text-white/80 italic mb-6">
+                    {contactData.messages.error}
+                  </p>
+                  <button onClick={() => setSentStatus(null)} className="btn-premium text-xs">Try Again</button>
+                </div>
+              )}
+
+              {!sentStatus && (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6 sm:gap-8 animate-reveal">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                     <div>
@@ -168,27 +210,36 @@ export default function ContactSection() {
                     <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Phone Number</label>
                     <input name="phone" value={form.phone} onChange={handleChange}
                       onFocus={() => setFocused("phone")} onBlur={() => setFocused("")}
-                      placeholder="+91 98765 43210" className={inputClass("phone")} />
+                      placeholder="7337480184" className={inputClass("phone")} />
                   </div>
 
                   <div>
                     <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Email Address *</label>
                     <input name="email" value={form.email} onChange={handleChange} required
                       onFocus={() => setFocused("email")} onBlur={() => setFocused("")}
-                      placeholder="hello@world.com" className={inputClass("email")} />
+                      placeholder="canaeventselite@gmail.com" className={inputClass("email")} />
                   </div>
 
                   <div>
-                    <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Event Type</label>
+                    <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Event / Service Type</label>
                     <div className="relative">
-                      <select name="eventType" value={form.eventType} onChange={handleChange}
+                      <select name="eventType" value={form.eventType} onChange={handleChange} required
                         onFocus={() => setFocused("eventType")} onBlur={() => setFocused("")}
                         className={`${inputClass("eventType")} cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2224%22%20height%3D%2224%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M7%2010l5%205%205-5z%22%20fill%3D%22%23C9A84C%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[position:right_20px_center]`}>
                         <option value="" className="bg-primary">Select event type…</option>
-                        {contactData.formOptions.map(o => <option key={o} value={o} className="bg-primary">{o}</option>)}
+                        {allServices.map(o => <option key={o.id} value={o.name} className="bg-primary">{o.name}</option>)}
                       </select>
                     </div>
                   </div>
+
+                  {form.eventType === "Custom Service" && (
+                    <div className="animate-reveal">
+                      <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Please specify your service *</label>
+                      <input name="customService" value={form.customService} onChange={handleChange} required
+                        onFocus={() => setFocused("customService")} onBlur={() => setFocused("")}
+                        placeholder="e.g. Destination Birthday Celebration" className={inputClass("customService")} />
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-[9px] sm:text-[10px] tracking-[2px] sm:tracking-[3px] text-secondary/60 font-black uppercase mb-2 ml-1">Your Message *</label>
@@ -198,8 +249,8 @@ export default function ContactSection() {
                       rows={4} className={`${inputClass("message")} resize-none`} />
                   </div>
 
-                  <button type="submit" className="btn-premium w-full py-4 sm:py-6 text-[12px] sm:text-[14px]">
-                    ✦ Send Magic Message ✦
+                  <button type="submit" disabled={loading} className="btn-premium w-full py-4 sm:py-6 text-[12px] sm:text-[14px]">
+                    {loading ? "Sending..." : "Send Message"}
                   </button>
                 </form>
               )}
