@@ -1,6 +1,5 @@
 // 1. Imports
 import React, { useEffect, useRef, useState } from "react";
-import { companyData } from "../data/companyData";
 
 // Import client logos
 import accordLogo from "../assets/images/clients/accord.png";
