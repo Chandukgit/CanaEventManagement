@@ -57,28 +57,33 @@ export default function Footer() {
           </h2>
         </div>
 
-        {/* 15 Instagram Reels grid layout - Clean player-only visual with header/footer cropped */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto px-6 mb-16 relative z-10">
-          {instagramReels.map((reel) => (
-            <div 
-              key={reel.id} 
-              className="relative w-full overflow-hidden rounded-[2rem] border border-secondary/15 bg-black shadow-lg"
-              style={{ paddingBottom: '177.77%', height: 0 }}
-            >
-              <iframe 
-                src={reel.embedUrl}
-                className="absolute left-0 w-full border-none"
-                style={{
-                  top: '-55px',
-                  height: 'calc(100% + 240px)',
-                }}
-                scrolling="no"
-                allowFullScreen
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                title={reel.title}
-              />
-            </div>
-          ))}
+        {/* Instagram Reels grid layout */}
+        <div className="relative z-10 mx-auto mb-16 max-w-7xl px-4 sm:px-6">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 md:grid-cols-4 lg:grid-cols-5">
+            {instagramReels.map((reel) => (
+              <div 
+                key={reel.id} 
+                className="group relative flex aspect-[9/16] w-full items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl border border-secondary/15 bg-zinc-950 shadow-md transition-all duration-300 hover:scale-[1.02] hover:border-secondary/30 hover:shadow-xl"
+              >
+                {/* Loading Skeleton underneath the iframe */}
+                <div className="absolute inset-0 -z-10 animate-pulse bg-zinc-900" />
+
+                <iframe 
+                  src={reel.embedUrl}
+                  title={reel.title}
+                  loading="lazy"
+                  className="absolute left-1/2 top-1/2 h-full w-full max-w-none border-none"
+                  // Retained your transform hack to hide IG headers/footers
+                  style={{ transform: 'translate(-50%, -52%) scale(1.7)' }}
+                  scrolling="no"
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                />
+                
+                {/* Optional: subtle gradient overlay that appears on hover for depth */}
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Parent company banner */}

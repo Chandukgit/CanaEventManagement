@@ -47,7 +47,7 @@ const getGalleryItems = () => {
     categories.forEach((cat, index) => {
       items.push({
         id: id++,
-        title: `Premium ${cat} Showcase`,
+        title: `Premium ${cat}`,
         category: cat,
         // Fallback to one of the hero images if they exist, otherwise a safe gradient fallback
         image: heroList[index % heroList.length] || "/src/assets/images/hero_bg_1.png"
